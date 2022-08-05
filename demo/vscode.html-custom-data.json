@@ -34,7 +34,7 @@
         { "name": "foo", "description": "description for foo", "values": [] },
         {
           "name": "foo-alt",
-          "description": "description for foo and here is a [link](https://google.com)",
+          "description": "description for foo",
           "values": [
             { "name": "1" },
             { "name": "2" },

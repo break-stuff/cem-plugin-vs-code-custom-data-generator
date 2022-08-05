@@ -24,11 +24,17 @@ export function generateCustomData({
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
     // @ts-ignore
-    analyzePhase({ ts, node, moduleDoc }) {      
+    analyzePhase({ ts, node, moduleDoc }) {
       setComponentReferences(ts, node, moduleDoc);
     },
     packageLinkPhase({ customElementsManifest }: Params) {
-      console.log('\u001b[' + 32 + 'm' + 'Generating Custom Data Config for VS Code' + '\u001b[0m');
+      console.log(
+        "\u001b[" +
+          32 +
+          "m" +
+          "Generating Custom Data Config for VS Code" +
+          "\u001b[0m"
+      );
       generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
     },
   };
@@ -45,8 +51,8 @@ function getReferences(node: any) {
   const docs = getDocsByTagName(node, "reference");
   return docs
     ?.map((tags: any) =>
-      tags.map((doc: any) => {
-        const values = doc.comment.split(/ - (.*)/s);
+      tags?.map((doc: any) => {
+        const values = doc?.comment.split(/ - (.*)/s);
 
         if (values && values.length > 1) {
           return {
@@ -71,8 +77,8 @@ function updateReferences(references: Reference[], node: any, moduleDoc: any) {
 }
 
 function getDocsByTagName(node: any, tagName: string) {
-  return node.jsDoc.map((doc: any) =>
-    doc?.tags?.filter((tag: any) => tag.tagName.getText() === tagName)
+  return node?.jsDoc?.map((doc: any) =>
+    doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
   );
 }
 
@@ -129,7 +135,7 @@ function getComponents(
 }
 
 function getComponentAttributes(component: Declaration) {
-  return component.attributes.map((attr) => {
+  return component?.attributes?.map((attr) => {
     return {
       name: attr.name,
       description: attr.description,
@@ -139,7 +145,7 @@ function getComponentAttributes(component: Declaration) {
 }
 
 function getAttributeValues(attr: Attribute): Value[] {
-  return attr.type.text
+  return attr.type?.text
     .split("|")
     .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
     .map((type) => {

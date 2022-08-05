@@ -11,7 +11,11 @@ export function generateCustomData({ outdir = "./", filename = "vscode.html-cust
             setComponentReferences(ts, node, moduleDoc);
         },
         packageLinkPhase({ customElementsManifest }) {
-            console.log('\u001b[' + 32 + 'm' + 'Generating Custom Data Config for VS Code' + '\u001b[0m');
+            console.log("\u001b[" +
+                32 +
+                "m" +
+                "Generating Custom Data Config for VS Code" +
+                "\u001b[0m");
             generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
         },
     };
@@ -25,8 +29,8 @@ function setComponentReferences(ts, node, moduleDoc) {
 function getReferences(node) {
     const docs = getDocsByTagName(node, "reference");
     return docs
-        ?.map((tags) => tags.map((doc) => {
-        const values = doc.comment.split(/ - (.*)/s);
+        ?.map((tags) => tags?.map((doc) => {
+        const values = doc?.comment.split(/ - (.*)/s);
         if (values && values.length > 1) {
             return {
                 name: values[0].trim(),
@@ -44,7 +48,7 @@ function updateReferences(references, node, moduleDoc) {
     }
 }
 function getDocsByTagName(node, tagName) {
-    return node.jsDoc.map((doc) => doc?.tags?.filter((tag) => tag.tagName.getText() === tagName));
+    return node?.jsDoc?.map((doc) => doc?.tags?.filter((tag) => tag?.tagName?.getText() === tagName));
 }
 function getTagList(customElementsManifest, exclude) {
     const components = getComponents(customElementsManifest, exclude);
@@ -77,7 +81,7 @@ function getComponents(customElementsManifest, exclude) {
         .flat();
 }
 function getComponentAttributes(component) {
-    return component.attributes.map((attr) => {
+    return component?.attributes?.map((attr) => {
         return {
             name: attr.name,
             description: attr.description,
@@ -86,8 +90,8 @@ function getComponentAttributes(component) {
     });
 }
 function getAttributeValues(attr) {
-    return attr.type.text
-        .split("|")
+    return attr.type?.text
+        ?.split("|")
         .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
         .map((type) => {
         return {
