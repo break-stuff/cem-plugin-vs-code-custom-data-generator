@@ -55,7 +55,7 @@ function getTagList(customElementsManifest, exclude) {
     return components.map((component) => {
         return {
             name: component.tagName,
-            description: component.summary,
+            description: component.summary || component.description,
             attributes: getComponentAttributes(component),
             references: componentReferences
                 ? componentReferences[`${component.tagName}`]
@@ -91,7 +91,7 @@ function getComponentAttributes(component) {
 }
 function getAttributeValues(attr) {
     return attr.type?.text
-        ?.split("|")
+        .split("|")
         .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
         .map((type) => {
         return {

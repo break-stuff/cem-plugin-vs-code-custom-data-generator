@@ -96,7 +96,7 @@ export default {
 
 | Tag | Description |
 | --- | ----------- |
-| `@summary` | This provides the description for the custom element when autocomplete is used or the element is hovered |
+| `@summary` | This provides the description for the custom element when autocomplete is used or the element is hovered. If no summary is provided, it will fall back to the `description` if it is available. |
 | `@attr` / `@attribute` | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options. |
 | `@reference` | This is a custom tag for this plugin. It creates reference links at the bottom of the information bubble. Multiple references are supported. |
 

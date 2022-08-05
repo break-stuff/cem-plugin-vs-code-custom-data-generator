@@ -90,7 +90,7 @@ function getTagList(
   return components.map((component) => {
     return {
       name: component.tagName,
-      description: component.summary,
+      description: component.summary || component.description,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]

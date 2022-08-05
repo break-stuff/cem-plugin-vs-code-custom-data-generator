@@ -2,6 +2,7 @@
   "tags": [
     {
       "name": "my-element-2",
+      "description": "",
       "attributes": [
         {
           "name": "disabled",
