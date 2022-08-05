@@ -2,7 +2,7 @@
 
 This is a plugin automatically generates a custom data config file for [VS Code](https://code.visualstudio.com/) using the [Custom Element Manifest Analyzer](https://custom-elements-manifest.open-wc.org/).
 
-![demo of autocomplete features for custom elements in vs code](https://github.com/microsoft/vscode-custom-data/blob/main/samples/webcomponents/demo.gif?raw=true)
+![demo of autocomplete features for custom elements in vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/demo.gif?raw=true)
 
 ## Usage
 
@@ -63,11 +63,13 @@ export default {
 ```
 ## Tag Mapping
 
+![an example of the jsDoc tags used to create the custom data file](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/tags.png?raw=true)
+
 | Tag | Description |
 | --- | ----------- |
 | `@summary` | This provides the description for the custom element when autocomplete is used or the element is hovered |
 | `@attr` / `@attribute` | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options. |
-| `@reference` | This is a custom tag for this plugin. It provides reference links at the bottom of the information bubble. Multiple references are supported. |
+| `@reference` | This is a custom tag for this plugin. It creates reference links at the bottom of the information bubble. Multiple references are supported. |
 
 The `@summary` and `@attr` / `@attribute` descriptions have limited markdown support and enable you to style text, create links, and add code snippets.
 
