@@ -50,9 +50,7 @@ If this is included in your `npm` package, the VS Code configuration will look s
 
 ***Note:*** The path is relative to the root of the project, not the settings file.
 
-Once it has been added, you will need to restart VS Code in order for it to register the new components. 
-
-After it has been restarted, you should begin seeing autocomplete information for your custom elements!
+Once it has been added, you will need to restart VS Code in order for it to register the new components. After it has been restarted, you should see autocomplete information for your custom elements!
 
 
 ## Configuration
