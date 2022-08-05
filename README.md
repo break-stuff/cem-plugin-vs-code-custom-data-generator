@@ -26,6 +26,35 @@ export default {
 };
 ```
 
+### Implementation
+
+If you don't have it already, add a VS Code settings folder and file at the root of your project - `.vscode/settings.json`. Then add or append the following code:
+
+```json
+{
+  "html.customData": [
+    "./vscode.html-custom-data.json"
+  ]
+}
+```
+
+If this is included in your `npm` package, the VS Code configuration will look something like this:
+
+```json
+{
+  "html.customData": [
+    "./node_modules/my-component-library/vscode.html-custom-data.json"
+  ]
+}
+```
+
+***Note:*** The path is relative to the root of the project, not the settings file.
+
+Once it has been added, you will need to restart VS Code in order for it to register the new components. 
+
+After it has been restarted, you should begin seeing autocomplete information for your custom elements!
+
+
 ## Configuration
 
 The configuration has the following optional parameters:
