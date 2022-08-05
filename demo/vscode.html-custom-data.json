@@ -1,0 +1,52 @@
+{
+  "tags": [
+    {
+      "name": "my-element-2",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "disables the element",
+          "values": []
+        },
+        { "name": "foo", "description": "description for foo", "values": [] },
+        {
+          "name": "foo-alt",
+          "description": "description for foo",
+          "values": [
+            { "name": "1" },
+            { "name": "2" },
+            { "name": "3" },
+            { "name": "4" }
+          ]
+        }
+      ],
+      "references": [{ "name": "My Reference", "url": "https://google.com" }]
+    },
+    {
+      "name": "my-element",
+      "description": "My custom component. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\\nUse it like this:\\n```html\\n<my-component type='text'></my-component>\\n<my-component\\n  type='color'\\n  color='#00bb00'\\n></my-component>\\n```",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "disables the element",
+          "values": []
+        },
+        { "name": "foo", "description": "description for foo", "values": [] },
+        {
+          "name": "foo-alt",
+          "description": "description for foo and here is a [link](https://google.com)",
+          "values": [
+            { "name": "1" },
+            { "name": "2" },
+            { "name": "3" },
+            { "name": "4" }
+          ]
+        }
+      ],
+      "references": [
+        { "name": "Google", "url": "https://google.com" },
+        { "name": "MDN", "url": "https://developer.mozilla.org/en-US/" }
+      ]
+    }
+  ]
+}
