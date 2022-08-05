@@ -2,6 +2,8 @@
 
 This is a plugin automatically generates a custom data config file for [VS Code](https://code.visualstudio.com/) using the [Custom Element Manifest Analyzer](https://custom-elements-manifest.open-wc.org/).
 
+This config enables VS Code to display autocomplete and contextual information about your custom elements.
+
 ![demo of autocomplete features for custom elements in vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/demo.gif?raw=true)
 
 ## Usage
