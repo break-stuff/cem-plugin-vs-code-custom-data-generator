@@ -92,7 +92,7 @@
             },
             {
               "type": {
-                "text": "1 | 2 | 3 | 4"
+                "text": "1|2|3|4"
               },
               "description": "description for foo",
               "name": "foo-alt"
@@ -102,6 +102,7 @@
             "name": "HTMLElement"
           },
           "tagName": "my-element-2",
+          "summary": "This is my alternate custom element - hence the number 2 at the end",
           "customElement": true
         }
       ],

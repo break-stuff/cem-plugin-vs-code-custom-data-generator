@@ -32,7 +32,7 @@ export function generateCustomData({
         "\u001b[" +
           32 +
           "m" +
-          "Generating Custom Data Config for VS Code" +
+          "[vs-code-custom-data-generator] - Generating Config" +
           "\u001b[0m"
       );
       generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
@@ -88,9 +88,12 @@ function getTagList(
 ) {
   const components = getComponents(customElementsManifest, exclude);
   return components.map((component) => {
+    const slots = component.slots ? `\n\n**Slots:**\n ${getSlots(component)}` : '';
+    const events = component.events ? `\n\n**Events:**\n ${getEvents(component)}` : '';
+
     return {
       name: component.tagName,
-      description: component.summary || component.description,
+      description: (component.summary || component.description).replaceAll('\\n', '\n') + slots + events,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]
@@ -153,6 +156,21 @@ function getAttributeValues(attr: Attribute): Value[] {
         name: type.trim(),
       } as Value;
     });
+}
+
+function getEvents(component: Declaration) {
+  return component.events
+    ?.map((event) => `- **${event.name}** - ${event.description}`)
+    .join("\n");
+}
+
+function getSlots(component: Declaration) {
+  return component.slots
+    ?.map(
+      (slot) =>
+        `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`
+    )
+    .join("\n");
 }
 
 function saveFile(outdir: string, fileName: string, contents: string) {

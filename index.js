@@ -14,7 +14,7 @@ export function generateCustomData({ outdir = "./", filename = "vscode.html-cust
             console.log("\u001b[" +
                 32 +
                 "m" +
-                "Generating Custom Data Config for VS Code" +
+                "[vs-code-custom-data-generator] - Generating Config" +
                 "\u001b[0m");
             generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
         },
@@ -53,9 +53,11 @@ function getDocsByTagName(node, tagName) {
 function getTagList(customElementsManifest, exclude) {
     const components = getComponents(customElementsManifest, exclude);
     return components.map((component) => {
+        const slots = component.slots ? `\n\n**Slots:**\n ${getSlots(component)}` : '';
+        const events = component.events ? `\n\n**Events:**\n ${getEvents(component)}` : '';
         return {
             name: component.tagName,
-            description: component.summary || component.description,
+            description: (component.summary || component.description).replaceAll('\\n', '\n') + slots + events,
             attributes: getComponentAttributes(component),
             references: componentReferences
                 ? componentReferences[`${component.tagName}`]
@@ -98,6 +100,16 @@ function getAttributeValues(attr) {
             name: type.trim(),
         };
     });
+}
+function getEvents(component) {
+    return component.events
+        ?.map((event) => `- **${event.name}** - ${event.description}`)
+        .join("\n");
+}
+function getSlots(component) {
+    return component.slots
+        ?.map((slot) => `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`)
+        .join("\n");
 }
 function saveFile(outdir, fileName, contents) {
     fs.writeFileSync(path.join(outdir, fileName), prettier.format(contents, { parser: "json" }));

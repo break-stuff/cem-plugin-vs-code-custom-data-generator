@@ -1,7 +1,16 @@
 /**
  * @attr {boolean} disabled - disables the element
  * @attribute {string} foo - description for foo
- * @attribute {1 | 2 | 3 | 4} foo-alt - description for foo
+ * @attribute {1|2|3|4} foo-alt - description for foo
+ * 
+ * @example
+ * ```
+ * <my-element-2
+ *   disabled
+ *   description="This is a description"
+ *   foo-alt="2">
+ * </my-element-2>
+ * ```
  *
  * @csspart bar - Styles the color of bar
  *
@@ -18,10 +27,11 @@
  * @fires {Event} typed-event - some description for typed-event
  * @event {CustomEvent} typed-custom-event - some description for typed-custom-event
  * 
- * @reference My Reference - https://google.com
- * 
- * @test some text
+ * @see My Reference - https://google.com
+ * @see {@link http://github.com | GitHub}
  *
+ * @summary This is my alternate custom element - hence the number 2 at the end
+ * 
  * @tag my-element-2
  * @tagname my-element-2
  */

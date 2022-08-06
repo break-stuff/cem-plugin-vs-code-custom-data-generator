@@ -2,7 +2,7 @@
   "tags": [
     {
       "name": "my-element-2",
-      "description": "",
+      "description": "This is my alternate custom element - hence the number 2 at the end\n\n**Slots:**\n - _default_ - This is a default/unnamed slot\n- **container** - You can put some elements here\n\n**Events:**\n - **custom-event** - some description for custom-event\n- **typed-event** - some description for typed-event\n- **typed-custom-event** - some description for typed-custom-event",
       "attributes": [
         {
           "name": "disabled",
@@ -20,12 +20,11 @@
             { "name": "4" }
           ]
         }
-      ],
-      "references": [{ "name": "My Reference", "url": "https://google.com" }]
+      ]
     },
     {
       "name": "my-element",
-      "description": "My custom component. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\\nUse it like this:\\n```html\\n<my-component type='text'></my-component>\\n<my-component\\n  type='color'\\n  color='#00bb00'\\n></my-component>\\n```",
+      "description": "My custom component. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\nUse it like this:\n```html\n<my-component type='text'></my-component>\n<my-component\n  type='color'\n  color='#00bb00'\n></my-component>\n```\n\n**Slots:**\n - _default_ - This is a default/unnamed slot\n- **container** - You can put some elements here\n\n**Events:**\n - **custom-event** - some description for custom-event\n- **typed-event** - some description for typed-event\n- **typed-custom-event** - some description for typed-custom-event",
       "attributes": [
         {
           "name": "disabled",
