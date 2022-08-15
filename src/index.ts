@@ -15,11 +15,15 @@ import {
 
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences: { [key: string]: Reference[] } = {};
+let config: Options = {};
 
 export function generateCustomData({
   outdir = "./",
   filename = "vscode.html-custom-data.json",
   exclude = [],
+  descriptionSrc,
+  slotDocs = true,
+  eventDocs = true,
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -35,7 +39,17 @@ export function generateCustomData({
           "[vs-code-custom-data-generator] - Generating Config" +
           "\u001b[0m"
       );
-      generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
+
+      config = {
+        exclude,
+        filename,
+        outdir,
+        descriptionSrc,
+        slotDocs,
+        eventDocs,
+      };
+
+      generateCustomDataFile(customElementsManifest);
     },
   };
 }
@@ -82,18 +96,22 @@ function getDocsByTagName(node: any, tagName: string) {
   );
 }
 
-function getTagList(
-  customElementsManifest: CustomElementsManifest,
-  exclude: string[]
-) {
-  const components = getComponents(customElementsManifest, exclude);
+function getTagList(customElementsManifest: CustomElementsManifest) {
+  const components = getComponents(customElementsManifest);
   return components.map((component) => {
-    const slots = component.slots ? `\n\n**Slots:**\n ${getSlots(component)}` : '';
-    const events = component.events ? `\n\n**Events:**\n ${getEvents(component)}` : '';
+    const slots = has(component.slots) && config.slotDocs
+      ? `\n\n**Slots:**\n ${getSlotDocs(component)}`
+      : "";
+    const events = has(component.events) && config.eventDocs
+      ? `\n\n**Events:**\n ${getEventDocs(component)}`
+      : "";
 
     return {
       name: component.tagName,
-      description: (component.summary || component.description).replaceAll('\\n', '\n') + slots + events,
+      description:
+        (component.summary || component.description).replaceAll("\\n", "\n") +
+        slots +
+        events,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]
@@ -103,34 +121,28 @@ function getTagList(
 }
 
 function generateCustomDataFile(
-  outdir: string,
-  filename: string,
-  customElementsManifest: CustomElementsManifest,
-  exclude: string[]
+  customElementsManifest: CustomElementsManifest
 ) {
-  createOutdir(outdir);
+  createOutdir();
 
-  const tags: Tag[] = getTagList(customElementsManifest, exclude);
+  const tags: Tag[] = getTagList(customElementsManifest);
 
-  saveFile(outdir, filename, getCustomDataFileContents(tags));
+  saveFile(config.outdir!, config.filename!, getCustomDataFileContents(tags));
 }
 
-function createOutdir(outdir: string) {
-  if (outdir !== "./" && !fs.existsSync(outdir)) {
-    fs.mkdirSync(outdir);
+function createOutdir() {
+  if (config.outdir !== "./" && !fs.existsSync(config.outdir!)) {
+    fs.mkdirSync(config.outdir!);
   }
 }
 
-function getComponents(
-  customElementsManifest: CustomElementsManifest,
-  exclude: string[]
-) {
+function getComponents(customElementsManifest: CustomElementsManifest) {
   return customElementsManifest.modules
     ?.map((mod) =>
       mod?.declarations?.filter(
         (dec: Declaration) =>
-          exclude &&
-          !exclude.includes(dec.name) &&
+          config.exclude &&
+          !config.exclude.includes(dec.name) &&
           (dec.customElement || dec.tagName)
       )
     )
@@ -138,13 +150,21 @@ function getComponents(
 }
 
 function getComponentAttributes(component: Declaration) {
-  return component?.attributes?.map((attr) => {
-    return {
+  const attributes: TagAttribute[] = [];
+  component?.attributes?.forEach((attr) => {
+    const existingAttr = attributes.find((x) => x.name === attr.name);
+    if (existingAttr) {
+      return;
+    }
+
+    attributes.push({
       name: attr.name,
       description: attr.description,
       values: getAttributeValues(attr),
-    } as TagAttribute;
+    } as TagAttribute);
   });
+
+  return attributes;
 }
 
 function getAttributeValues(attr: Attribute): Value[] {
@@ -158,17 +178,19 @@ function getAttributeValues(attr: Attribute): Value[] {
     });
 }
 
-function getEvents(component: Declaration) {
+function getEventDocs(component: Declaration) {
   return component.events
     ?.map((event) => `- **${event.name}** - ${event.description}`)
     .join("\n");
 }
 
-function getSlots(component: Declaration) {
+function getSlotDocs(component: Declaration) {
   return component.slots
     ?.map(
       (slot) =>
-        `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`
+        `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${
+          slot.description
+        }`
     )
     .join("\n");
 }
@@ -185,3 +207,5 @@ function getCustomDataFileContents(tags: Tag[]) {
     "tags": ${JSON.stringify(tags)}
   }`;
 }
+
+const has = (arr: any[]) => Array.isArray(arr) && arr.length > 0;

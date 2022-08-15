@@ -66,7 +66,11 @@ The configuration has the following optional parameters:
   /** name of the file with you component's custom data */
   filename?: string;
   /** class names of any components you would like to exclude from the custom data */
-  exclude?: string[],
+  exclude?: string[];
+    /** Displays the slot section of the element description */
+  slotDocs?: boolean;
+  /** Displays the event section of the element description */
+  eventDocs?: boolean;
 }
 ```
 
@@ -103,3 +107,4 @@ export default {
 The `@summary` and `@attr` / `@attribute` descriptions have limited markdown support and enable you to style text, create links, and add code snippets.
 
 ***Note:*** _The descriptions do support line breaks using `\n`, but in order to successfully write the contents to a file, they are escaped (`\\n`). To make them work properly in the editor, you will need to replace `\\n` with `\n`._
+

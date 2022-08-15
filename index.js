@@ -3,7 +3,8 @@ import path from "path";
 import prettier from "prettier";
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences = {};
-export function generateCustomData({ outdir = "./", filename = "vscode.html-custom-data.json", exclude = [], } = {}) {
+let config = {};
+export function generateCustomData({ outdir = "./", filename = "vscode.html-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -16,7 +17,15 @@ export function generateCustomData({ outdir = "./", filename = "vscode.html-cust
                 "m" +
                 "[vs-code-custom-data-generator] - Generating Config" +
                 "\u001b[0m");
-            generateCustomDataFile(outdir, filename, customElementsManifest, exclude);
+            config = {
+                exclude,
+                filename,
+                outdir,
+                descriptionSrc,
+                slotDocs,
+                eventDocs,
+            };
+            generateCustomDataFile(customElementsManifest);
         },
     };
 }
@@ -50,14 +59,20 @@ function updateReferences(references, node, moduleDoc) {
 function getDocsByTagName(node, tagName) {
     return node?.jsDoc?.map((doc) => doc?.tags?.filter((tag) => tag?.tagName?.getText() === tagName));
 }
-function getTagList(customElementsManifest, exclude) {
-    const components = getComponents(customElementsManifest, exclude);
+function getTagList(customElementsManifest) {
+    const components = getComponents(customElementsManifest);
     return components.map((component) => {
-        const slots = component.slots ? `\n\n**Slots:**\n ${getSlots(component)}` : '';
-        const events = component.events ? `\n\n**Events:**\n ${getEvents(component)}` : '';
+        const slots = has(component.slots) && config.slotDocs
+            ? `\n\n**Slots:**\n ${getSlotDocs(component)}`
+            : "";
+        const events = has(component.events) && config.eventDocs
+            ? `\n\n**Events:**\n ${getEventDocs(component)}`
+            : "";
         return {
             name: component.tagName,
-            description: (component.summary || component.description).replaceAll('\\n', '\n') + slots + events,
+            description: (component.summary || component.description).replaceAll("\\n", "\n") +
+                slots +
+                events,
             attributes: getComponentAttributes(component),
             references: componentReferences
                 ? componentReferences[`${component.tagName}`]
@@ -65,31 +80,37 @@ function getTagList(customElementsManifest, exclude) {
         };
     });
 }
-function generateCustomDataFile(outdir, filename, customElementsManifest, exclude) {
-    createOutdir(outdir);
-    const tags = getTagList(customElementsManifest, exclude);
-    saveFile(outdir, filename, getCustomDataFileContents(tags));
+function generateCustomDataFile(customElementsManifest) {
+    createOutdir();
+    const tags = getTagList(customElementsManifest);
+    saveFile(config.outdir, config.filename, getCustomDataFileContents(tags));
 }
-function createOutdir(outdir) {
-    if (outdir !== "./" && !fs.existsSync(outdir)) {
-        fs.mkdirSync(outdir);
+function createOutdir() {
+    if (config.outdir !== "./" && !fs.existsSync(config.outdir)) {
+        fs.mkdirSync(config.outdir);
     }
 }
-function getComponents(customElementsManifest, exclude) {
+function getComponents(customElementsManifest) {
     return customElementsManifest.modules
-        ?.map((mod) => mod?.declarations?.filter((dec) => exclude &&
-        !exclude.includes(dec.name) &&
+        ?.map((mod) => mod?.declarations?.filter((dec) => config.exclude &&
+        !config.exclude.includes(dec.name) &&
         (dec.customElement || dec.tagName)))
         .flat();
 }
 function getComponentAttributes(component) {
-    return component?.attributes?.map((attr) => {
-        return {
+    const attributes = [];
+    component?.attributes?.forEach((attr) => {
+        const existingAttr = attributes.find((x) => x.name === attr.name);
+        if (existingAttr) {
+            return;
+        }
+        attributes.push({
             name: attr.name,
             description: attr.description,
             values: getAttributeValues(attr),
-        };
+        });
     });
+    return attributes;
 }
 function getAttributeValues(attr) {
     return attr.type?.text
@@ -101,12 +122,12 @@ function getAttributeValues(attr) {
         };
     });
 }
-function getEvents(component) {
+function getEventDocs(component) {
     return component.events
         ?.map((event) => `- **${event.name}** - ${event.description}`)
         .join("\n");
 }
-function getSlots(component) {
+function getSlotDocs(component) {
     return component.slots
         ?.map((slot) => `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`)
         .join("\n");
@@ -119,3 +140,4 @@ function getCustomDataFileContents(tags) {
     "tags": ${JSON.stringify(tags)}
   }`;
 }
+const has = (arr) => Array.isArray(arr) && arr.length > 0;
