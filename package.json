@@ -1,6 +1,6 @@
 {
   "name": "cem-plugin-vs-code-custom-data-generator",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "description": "A custom elements manifest analyzer plugin to generate a custom data file for VS Code.",
   "main": "index.js",
   "type": "module",
