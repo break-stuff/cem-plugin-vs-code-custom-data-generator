@@ -7,6 +7,12 @@ export interface Options {
   filename?: string;
   /** class names of any components you would like to exclude from the custom data */
   exclude?: string[];
+  /** The property name from the component object constructed by the CEM Analyzer */
+  descriptionSrc?: "description" | "summary";
+  /** Displays the slot section of the element description */
+  slotDocs?: boolean;
+  /** Displays the event section of the element description */
+  eventDocs?: boolean;
 }
 
 export declare function generateCustomData(options: Options): Plugin;
