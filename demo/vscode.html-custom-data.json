@@ -40,6 +40,10 @@
             { "name": "4" }
           ]
         }
+      ],
+      "references": [
+        { "name": "Documentation", "url": "https://my-site.com/docs" },
+        { "name": "MDN", "url": "https://developer.mozilla.org/en-US/" }
       ]
     }
   ]

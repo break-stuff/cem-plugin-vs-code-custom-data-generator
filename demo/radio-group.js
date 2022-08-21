@@ -33,6 +33,9 @@
  * @fires custom-event - some description for custom-event
  * @fires {Event} typed-event - some description for typed-event
  * @event {CustomEvent} typed-custom-event - some description for typed-custom-event
+ * 
+ * @reference Documentation - https://my-site.com/docs
+ * @reference MDN - https://developer.mozilla.org/en-US/
  *
  */
 class RadioGroup extends HTMLElement {}
