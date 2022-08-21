@@ -70,15 +70,18 @@ function getTagList(customElementsManifest) {
             : "";
         return {
             name: component.tagName,
-            description: (component.summary || component.description).replaceAll("\\n", "\n") +
-                slots +
-                events,
+            description: getDescription(component) + slots + events,
             attributes: getComponentAttributes(component),
             references: componentReferences
                 ? componentReferences[`${component.tagName}`]
                 : [],
         };
     });
+}
+function getDescription(component) {
+    return ((config.descriptionSrc
+        ? component[config.descriptionSrc]
+        : component.summary || component.description)?.replaceAll("\\n", "\n") || "");
 }
 function generateCustomDataFile(customElementsManifest) {
     createOutdir();

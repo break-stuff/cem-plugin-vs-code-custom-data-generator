@@ -99,25 +99,33 @@ function getDocsByTagName(node: any, tagName: string) {
 function getTagList(customElementsManifest: CustomElementsManifest) {
   const components = getComponents(customElementsManifest);
   return components.map((component) => {
-    const slots = has(component.slots) && config.slotDocs
-      ? `\n\n**Slots:**\n ${getSlotDocs(component)}`
-      : "";
-    const events = has(component.events) && config.eventDocs
-      ? `\n\n**Events:**\n ${getEventDocs(component)}`
-      : "";
+    const slots =
+      has(component.slots) && config.slotDocs
+        ? `\n\n**Slots:**\n ${getSlotDocs(component)}`
+        : "";
+    const events =
+      has(component.events) && config.eventDocs
+        ? `\n\n**Events:**\n ${getEventDocs(component)}`
+        : "";
 
     return {
       name: component.tagName,
-      description:
-        (component.summary || component.description).replaceAll("\\n", "\n") +
-        slots +
-        events,
+      description: getDescription(component) + slots + events,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]
         : [],
     };
   });
+}
+
+function getDescription(component: Declaration) {
+  return (
+    (config.descriptionSrc
+      ? component[config.descriptionSrc]
+      : component.summary || component.description
+    )?.replaceAll("\\n", "\n") || ""
+  );
 }
 
 function generateCustomDataFile(
@@ -152,7 +160,9 @@ function getComponents(customElementsManifest: CustomElementsManifest) {
 function getComponentAttributes(component: Declaration) {
   const attributes: TagAttribute[] = [];
   component?.attributes?.forEach((attr) => {
-    const existingAttr = attributes.find((x) => x.name === attr.name || x.name === attr.fieldName);
+    const existingAttr = attributes.find(
+      (x) => x.name === attr.name || x.name === attr.fieldName
+    );
     if (existingAttr) {
       return;
     }
