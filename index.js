@@ -100,12 +100,12 @@ function getComponents(customElementsManifest) {
 function getComponentAttributes(component) {
     const attributes = [];
     component?.attributes?.forEach((attr) => {
-        const existingAttr = attributes.find((x) => x.name === attr.name);
+        const existingAttr = attributes.find((x) => x.name === attr.name || x.name === attr.fieldName);
         if (existingAttr) {
             return;
         }
         attributes.push({
-            name: attr.name,
+            name: attr.fieldName || attr.name,
             description: attr.description,
             values: getAttributeValues(attr),
         });
