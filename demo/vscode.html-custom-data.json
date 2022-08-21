@@ -1,40 +1,38 @@
 {
   "tags": [
     {
-      "name": "my-element-2",
-      "description": "This is my alternate custom element - hence the number 2 at the end\n\n**Slots:**\n - _default_ - This is a default/unnamed slot\n- **container** - You can put some elements here\n\n**Events:**\n - **custom-event** - some description for custom-event\n- **typed-event** - some description for typed-event\n- **typed-custom-event** - some description for typed-custom-event",
+      "name": "radio-button",
+      "description": "Radios buttons allow users to select a single option from a group. Here is its [documentation](https://my-site.com/documentation).\n\nUse it like this:\n```html\n<radio-button value=\"1\" disabled>Your label</radio-button>\n```\n\n**Slots:**\n - _default_ - add text here to label your radio button",
       "attributes": [
         {
-          "name": "disabled",
-          "description": "disables the element",
+          "name": "value",
+          "description": "The value assigned to the radio button. This will reflect in the radio group when clicked.",
           "values": []
         },
-        { "name": "foo", "description": "description for foo", "values": [] },
         {
-          "name": "foo-alt",
-          "description": "description for foo",
-          "values": [
-            { "name": "1" },
-            { "name": "2" },
-            { "name": "3" },
-            { "name": "4" }
-          ]
+          "name": "disabled",
+          "description": "Disables the radio button",
+          "values": []
         }
       ]
     },
     {
-      "name": "my-element",
-      "description": "My custom component. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\nUse it like this:\n```html\n<my-component type='text'></my-component>\n<my-component\n  type='color'\n  color='#00bb00'\n></my-component>\n```\n\n**Slots:**\n - _default_ - This is a default/unnamed slot\n- **container** - You can put some elements here\n\n**Events:**\n - **custom-event** - some description for custom-event\n- **typed-event** - some description for typed-event\n- **typed-custom-event** - some description for typed-custom-event",
+      "name": "radio-group",
+      "description": "\nRadio groups are used to group multiple radios or radio buttons so they function as a single form control. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\n\nUse it like this:\n```html\n<radio-group value=\"2\" size=\"3\">\n  <span slot=\"label\">My Label</span>\n  <radio-button value=\"1\">Option 1</radio-button>\n  <radio-button value=\"2\">Option 2</radio-button>\n  <radio-button value=\"3\">Option 3</radio-button>\n</radio-group>\n```\n\n**Slots:**\n - _default_ - add radio buttons to the `default` slot to create options to your radio group\n- **label** - placeholder for the radio group label\n\n**Events:**\n - **custom-event** - some description for custom-event\n- **typed-event** - some description for typed-event\n- **typed-custom-event** - some description for typed-custom-event",
       "attributes": [
         {
           "name": "disabled",
-          "description": "disables the element",
+          "description": "Disables the element",
           "values": []
         },
-        { "name": "foo", "description": "description for foo", "values": [] },
         {
-          "name": "foo-alt",
-          "description": "description for foo",
+          "name": "value",
+          "description": "The value of the selected radio",
+          "values": []
+        },
+        {
+          "name": "size",
+          "description": "This will control the size of radio buttons",
           "values": [
             { "name": "1" },
             { "name": "2" },
@@ -42,10 +40,6 @@
             { "name": "4" }
           ]
         }
-      ],
-      "references": [
-        { "name": "Google", "url": "https://google.com" },
-        { "name": "MDN", "url": "https://developer.mozilla.org/en-US/" }
       ]
     }
   ]

@@ -4,127 +4,61 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "demo/my-element-2.js",
+      "path": "demo/radio-button.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "MyElement2",
-          "cssProperties": [
-            {
-              "description": "Controls the color of foo",
-              "name": "--text-color"
-            },
-            {
-              "description": "Controls the color of bar",
-              "name": "--background-color",
-              "default": "red"
-            }
-          ],
-          "cssParts": [
-            {
-              "description": "Styles the color of bar",
-              "name": "bar"
-            }
-          ],
+          "name": "Radio",
           "slots": [
             {
-              "description": "This is a default/unnamed slot",
+              "description": "add text here to label your radio button",
               "name": ""
-            },
-            {
-              "description": "You can put some elements here",
-              "name": "container"
-            }
-          ],
-          "members": [
-            {
-              "type": {
-                "text": "boolean"
-              },
-              "description": "some description",
-              "name": "prop1",
-              "kind": "field"
-            },
-            {
-              "type": {
-                "text": "number"
-              },
-              "description": "some description",
-              "name": "prop2",
-              "kind": "field"
-            }
-          ],
-          "events": [
-            {
-              "description": "some description for custom-event",
-              "name": "custom-event"
-            },
-            {
-              "type": {
-                "text": "Event"
-              },
-              "description": "some description for typed-event",
-              "name": "typed-event"
-            },
-            {
-              "type": {
-                "text": "CustomEvent"
-              },
-              "description": "some description for typed-custom-event",
-              "name": "typed-custom-event"
             }
           ],
           "attributes": [
             {
               "type": {
-                "text": "boolean"
-              },
-              "description": "disables the element",
-              "name": "disabled"
-            },
-            {
-              "type": {
                 "text": "string"
               },
-              "description": "description for foo",
-              "name": "foo"
+              "description": "The value assigned to the radio button. This will reflect in the radio group when clicked.",
+              "name": "value"
             },
             {
               "type": {
-                "text": "1|2|3|4"
+                "text": "boolean"
               },
-              "description": "description for foo",
-              "name": "foo-alt"
+              "description": "Disables the radio button",
+              "name": "disabled"
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "tagName": "my-element-2",
-          "summary": "This is my alternate custom element - hence the number 2 at the end",
+          "tagName": "radio-button",
+          "summary": "Radios buttons allow users to select a single option from a group. Here is its [documentation](https://my-site.com/documentation).\\n\\nUse it like this:\\n```html\\n<radio-button value=\"1\" disabled>Your label</radio-button>\\n```",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "custom-element-definition",
-          "name": "my-element-2",
+          "name": "radio-button",
           "declaration": {
-            "name": "MyElement2",
-            "module": "demo/my-element-2.js"
+            "name": "Radio",
+            "module": "demo/radio-button.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "demo/my-element.js",
+      "path": "demo/radio-group.js",
       "declarations": [
         {
           "kind": "class",
-          "description": "",
-          "name": "MyElement",
+          "description": "\nRadio groups are used to group multiple radios or radio buttons so they function as a single form control. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\n\nUse it like this:\n```html\n<radio-group value=\"2\" size=\"3\">\n  <span slot=\"label\">My Label</span>\n  <radio-button value=\"1\">Option 1</radio-button>\n  <radio-button value=\"2\">Option 2</radio-button>\n  <radio-button value=\"3\">Option 3</radio-button>\n</radio-group>\n```",
+          "name": "RadioGroup",
           "cssProperties": [
             {
               "description": "Controls the color of foo",
@@ -144,12 +78,12 @@
           ],
           "slots": [
             {
-              "description": "This is a default/unnamed slot",
+              "description": "add radio buttons to the `default` slot to create options to your radio group",
               "name": ""
             },
             {
-              "description": "You can put some elements here",
-              "name": "container"
+              "description": "placeholder for the radio group label",
+              "name": "label"
             }
           ],
           "members": [
@@ -157,7 +91,7 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "some description",
+              "description": "this toggles some unseen feature",
               "name": "prop1",
               "kind": "field"
             },
@@ -165,7 +99,7 @@
               "type": {
                 "text": "number"
               },
-              "description": "some description",
+              "description": "this will adjust thr width of the unit",
               "name": "prop2",
               "kind": "field"
             }
@@ -195,39 +129,38 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "disables the element",
+              "description": "Disables the element",
               "name": "disabled"
             },
             {
               "type": {
                 "text": "string"
               },
-              "description": "description for foo",
-              "name": "foo"
+              "description": "The value of the selected radio",
+              "name": "value"
             },
             {
               "type": {
-                "text": "1 | 2 | 3 | 4"
+                "text": "1|2|3|4"
               },
-              "description": "description for foo",
-              "name": "foo-alt"
+              "description": "This will control the size of radio buttons",
+              "name": "size"
             }
           ],
           "superclass": {
             "name": "HTMLElement"
           },
-          "tagName": "my-element",
-          "summary": "My custom component. Here is its [documentation](https://github.com/microsoft/vscode-custom-data/blob/master/samples/webcomponents/src/components/my-component/docs.md).\\nUse it like this:\\n```html\\n<my-component type='text'></my-component>\\n<my-component\\n  type='color'\\n  color='#00bb00'\\n></my-component>\\n```",
+          "tagName": "radio-group",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "custom-element-definition",
-          "name": "my-element",
+          "name": "radio-group",
           "declaration": {
-            "name": "MyElement",
-            "module": "demo/my-element.js"
+            "name": "RadioGroup",
+            "module": "demo/radio-group.js"
           }
         }
       ]
