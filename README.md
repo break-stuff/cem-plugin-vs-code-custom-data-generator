@@ -41,7 +41,12 @@ If you don't have it already, add a VS Code settings folder and file at the root
 
 ```json
 {
-  "html.customData": ["./vscode.html-custom-data.json"]
+  "html.customData": [
+    "./vscode.html-custom-data.json"
+  ],
+  "css.customData": [
+    "./vscode.css-custom-data.json"
+  ],
 }
 ```
 
@@ -179,6 +184,16 @@ Event information will display with the element description during autocompletio
 
 ## CSS Custom Data
 
-Adding the CSS Custom data file to your config provides you with autocomplete for your component's CSS custom properties.
+Adding the CSS Custom Data file to your config provides you with autocomplete for your component's CSS custom properties.
+
+These values can be added in your component's jsDoc. The `var()` wrapper will be added automatically.
+
+```ts
+/**
+ *
+ * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the border radius of the component
+ * 
+ */
+```
 
 ![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
