@@ -11,6 +11,7 @@ import {
   Tag,
   TagAttribute,
   Value,
+  VsCssProperty,
 } from "./types";
 
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
@@ -19,7 +20,8 @@ let config: Options = {};
 
 export function generateCustomData({
   outdir = "./",
-  filename = "vscode.html-custom-data.json",
+  htmlFileName = "vscode.html-custom-data.json",
+  cssFileName = "vscode.css-custom-data.json",
   exclude = [],
   descriptionSrc,
   slotDocs = true,
@@ -42,7 +44,8 @@ export function generateCustomData({
 
       config = {
         exclude,
-        filename,
+        htmlFileName,
+        cssFileName,
         outdir,
         descriptionSrc,
         slotDocs,
@@ -96,6 +99,34 @@ function getDocsByTagName(node: any, tagName: string) {
   );
 }
 
+function getPropertyList(
+  customElementsManifest: CustomElementsManifest
+): VsCssProperty[] {
+  const components = getComponents(customElementsManifest);
+  return (
+    components?.map((component) => {
+      return (
+        component.cssProperties?.map((prop) => {
+          return {
+            name: prop.name,
+            description: prop.description,
+            values: prop?.type?.text
+              ? prop.type.text.split(",").map((x) => {
+                  const propName = x.trim();
+                  return {
+                    name: propName.startsWith("--")
+                      ? `var(${propName})`
+                      : propName,
+                  };
+                })
+              : [],
+          };
+        }) || []
+      );
+    }) || []
+  ).flat();
+}
+
 function getTagList(customElementsManifest: CustomElementsManifest) {
   const components = getComponents(customElementsManifest);
   return components.map((component) => {
@@ -134,8 +165,19 @@ function generateCustomDataFile(
   createOutdir();
 
   const tags: Tag[] = getTagList(customElementsManifest);
+  const cssPropertied = getPropertyList(customElementsManifest);
 
-  saveFile(config.outdir!, config.filename!, getCustomDataFileContents(tags));
+  saveFile(
+    config.outdir!,
+    config.htmlFileName!,
+    getCustomHtmlDataFileContents(tags)
+  );
+
+  saveFile(
+    config.outdir!,
+    config.cssFileName!,
+    getCustomCssDataFileContents(cssPropertied)
+  );
 }
 
 function createOutdir() {
@@ -212,9 +254,17 @@ function saveFile(outdir: string, fileName: string, contents: string) {
   );
 }
 
-function getCustomDataFileContents(tags: Tag[]) {
+function getCustomHtmlDataFileContents(tags: Tag[]) {
   return `{
+    "version": 1.1,
     "tags": ${JSON.stringify(tags)}
+  }`;
+}
+
+function getCustomCssDataFileContents(properties: VsCssProperty[]) {
+  return `{
+    "version": 1.1,
+    "properties": ${JSON.stringify(properties)}
   }`;
 }
 

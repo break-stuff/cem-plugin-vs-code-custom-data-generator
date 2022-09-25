@@ -1,8 +1,10 @@
 export interface Options {
   /** path to output directory */
   outdir?: string;
-  /** name of the file with you component's custom data */
-  filename?: string;
+  /** name of the file with you component's custom HTML data */
+  htmlFileName?: string;
+  /** name of the file with you component's custom CSS data */
+  cssFileName?: string;
   /** class names of any components you would like to exclude from the custom data */
   exclude?: string[];
   /** The property name from the component object constructed by the CEM Analyzer */
@@ -17,6 +19,13 @@ export interface Tag {
   name: string;
   description?: string;
   attributes?: TagAttribute[];
+  references?: Reference[];
+}
+
+export interface VsCssProperty {
+  name: string;
+  description?: string;
+  values?: Value[];
   references?: Reference[];
 }
 
@@ -35,6 +44,7 @@ interface Reference {
   name: string;
   url: string;
 }
+
 
 /**
  *
@@ -78,6 +88,7 @@ interface CssProperty {
   description: string;
   name: string;
   default: string;
+  type: Type;
 }
 
 interface CssPart {

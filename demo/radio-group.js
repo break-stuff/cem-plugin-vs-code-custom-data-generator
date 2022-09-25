@@ -24,7 +24,7 @@
  * @slot - add radio buttons to the `default` slot to create options to your radio group
  * @slot label - placeholder for the radio group label
  *
- * @cssprop --text-color - Controls the color of foo
+ * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the color of foo
  * @cssproperty [--background-color=red] - Controls the color of bar
  *
  * @prop {boolean} prop1 - this toggles some unseen feature
@@ -33,7 +33,7 @@
  * @fires custom-event - some description for custom-event
  * @fires {Event} typed-event - some description for typed-event
  * @event {CustomEvent} typed-custom-event - some description for typed-custom-event
- * 
+ *
  * @reference Documentation - https://my-site.com/docs
  * @reference MDN - https://developer.mozilla.org/en-US/
  *

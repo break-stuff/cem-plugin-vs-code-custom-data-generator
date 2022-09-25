@@ -61,8 +61,11 @@
           "name": "RadioGroup",
           "cssProperties": [
             {
+              "type": {
+                "text": "--radius-sm,--radius-md,--radius-lg"
+              },
               "description": "Controls the color of foo",
-              "name": "--text-color"
+              "name": "--border-radius"
             },
             {
               "description": "Controls the color of bar",

@@ -4,7 +4,7 @@ import prettier from "prettier";
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences = {};
 let config = {};
-export function generateCustomData({ outdir = "./", filename = "vscode.html-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, } = {}) {
+export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -19,7 +19,8 @@ export function generateCustomData({ outdir = "./", filename = "vscode.html-cust
                 "\u001b[0m");
             config = {
                 exclude,
-                filename,
+                htmlFileName,
+                cssFileName,
                 outdir,
                 descriptionSrc,
                 slotDocs,
@@ -59,6 +60,27 @@ function updateReferences(references, node, moduleDoc) {
 function getDocsByTagName(node, tagName) {
     return node?.jsDoc?.map((doc) => doc?.tags?.filter((tag) => tag?.tagName?.getText() === tagName));
 }
+function getPropertyList(customElementsManifest) {
+    const components = getComponents(customElementsManifest);
+    return (components?.map((component) => {
+        return (component.cssProperties?.map((prop) => {
+            return {
+                name: prop.name,
+                description: prop.description,
+                values: prop?.type?.text
+                    ? prop.type.text.split(",").map((x) => {
+                        const propName = x.trim();
+                        return {
+                            name: propName.startsWith("--")
+                                ? `var(${propName})`
+                                : propName,
+                        };
+                    })
+                    : [],
+            };
+        }) || []);
+    }) || []).flat();
+}
 function getTagList(customElementsManifest) {
     const components = getComponents(customElementsManifest);
     return components.map((component) => {
@@ -86,7 +108,9 @@ function getDescription(component) {
 function generateCustomDataFile(customElementsManifest) {
     createOutdir();
     const tags = getTagList(customElementsManifest);
-    saveFile(config.outdir, config.filename, getCustomDataFileContents(tags));
+    const cssPropertied = getPropertyList(customElementsManifest);
+    saveFile(config.outdir, config.htmlFileName, getCustomHtmlDataFileContents(tags));
+    saveFile(config.outdir, config.cssFileName, getCustomCssDataFileContents(cssPropertied));
 }
 function createOutdir() {
     if (config.outdir !== "./" && !fs.existsSync(config.outdir)) {
@@ -138,9 +162,16 @@ function getSlotDocs(component) {
 function saveFile(outdir, fileName, contents) {
     fs.writeFileSync(path.join(outdir, fileName), prettier.format(contents, { parser: "json" }));
 }
-function getCustomDataFileContents(tags) {
+function getCustomHtmlDataFileContents(tags) {
     return `{
+    "version": 1.1,
     "tags": ${JSON.stringify(tags)}
+  }`;
+}
+function getCustomCssDataFileContents(properties) {
+    return `{
+    "version": 1.1,
+    "properties": ${JSON.stringify(properties)}
   }`;
 }
 const has = (arr) => Array.isArray(arr) && arr.length > 0;

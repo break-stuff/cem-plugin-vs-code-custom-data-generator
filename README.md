@@ -51,6 +51,9 @@ If this is included in your `npm` package, the VS Code configuration will look s
 {
   "html.customData": [
     "./node_modules/my-component-library/vscode.html-custom-data.json"
+  ],
+  "css.customData": [
+    "./node_modules/my-component-library/vscode.css-custom-data.json"
   ]
 }
 ```
@@ -173,3 +176,9 @@ Slot information will display with the element description during autocompletion
 Event information will display with the element description during autocompletion or when hovered over. This section can be hidden by setting `slotEvents` to `false` in the config.
 
 ![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/events.png?raw=true)
+
+## CSS Custom Data
+
+Adding the CSS Custom data file to your config provides you with autocomplete for your component's CSS custom properties.
+
+![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
