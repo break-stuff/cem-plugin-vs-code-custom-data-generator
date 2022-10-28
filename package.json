@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "demo": "tsc && cem analyze",
-    "deploy": "tsc && npm run publish"
+    "deploy": "tsc && npm publish"
   },
   "author": "",
   "license": "MIT",
