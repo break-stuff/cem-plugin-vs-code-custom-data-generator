@@ -4,7 +4,7 @@ import prettier from "prettier";
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences = {};
 let config = {};
-export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, } = {}) {
+export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -25,6 +25,8 @@ export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-
                 descriptionSrc,
                 slotDocs,
                 eventDocs,
+                cssPartsDocs,
+                cssPropertiesDocs,
             };
             generateCustomDataFile(customElementsManifest);
         },
@@ -90,9 +92,15 @@ function getTagList(customElementsManifest) {
         const events = has(component.events) && config.eventDocs
             ? `\n\n**Events:**\n ${getEventDocs(component)}`
             : "";
+        const cssProps = has(component.cssProperties) && config.cssPropertiesDocs
+            ? `\n\n**CSS Custom Properties:**\n ${getCssPropertyDocs(component.cssProperties)}`
+            : "";
+        const parts = has(component.cssProperties) && config.cssPropertiesDocs
+            ? `\n\n**CSS Parts:**\n ${getCssPartsDocs(component.cssParts)}`
+            : "";
         return {
             name: component.tagName,
-            description: getDescription(component) + slots + events,
+            description: getDescription(component) + slots + events + cssProps + parts,
             attributes: getComponentAttributes(component),
             references: componentReferences
                 ? componentReferences[`${component.tagName}`]
@@ -141,7 +149,7 @@ function getComponentAttributes(component) {
 }
 function getAttributeValues(attr) {
     return attr.type?.text
-        .split("|")
+        .split(",")
         .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
         .map((type) => {
         return {
@@ -152,6 +160,16 @@ function getAttributeValues(attr) {
 function getEventDocs(component) {
     return component.events
         ?.map((event) => `- **${event.name}** - ${event.description}`)
+        .join("\n");
+}
+function getCssPropertyDocs(properties) {
+    return properties
+        ?.map((prop) => `- **${prop.name}** - ${prop.description} _(default: ${prop.default})_`)
+        .join("\n");
+}
+function getCssPartsDocs(parts) {
+    return parts
+        ?.map((part) => `- **${part.name}** - ${part.description}`)
         .join("\n");
 }
 function getSlotDocs(component) {

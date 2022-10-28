@@ -8,8 +8,12 @@
         { "name": "var(--radius-sm)" },
         { "name": "var(--radius-md)" },
         { "name": "var(--radius-lg)" }
-      ],
-      "restrictions": ["enum"]
+      ]
+    },
+    {
+      "name": "--background-color",
+      "description": "Controls the color of bar",
+      "values": []
     }
   ]
 }

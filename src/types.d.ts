@@ -13,6 +13,10 @@ export interface Options {
   slotDocs?: boolean;
   /** Displays the event section of the element description */
   eventDocs?: boolean;
+  /** Displays the CSS custom properties section of the element description */
+  cssPropertiesDocs?: boolean;
+  /** Displays the CSS parts section of the element description */
+  cssPartsDocs?: boolean;
 }
 
 export interface Tag {
@@ -68,6 +72,7 @@ interface Module {
   declarations: Declaration[];
   exports: Export[];
 }
+
 
 export interface Declaration {
   kind: string;

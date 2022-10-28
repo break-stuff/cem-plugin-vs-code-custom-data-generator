@@ -3,6 +3,8 @@ import path from "path";
 import prettier from "prettier";
 import {
   Attribute,
+  CssPart,
+  CssProperty,
   CustomElementsManifest,
   Declaration,
   Options,
@@ -26,6 +28,8 @@ export function generateCustomData({
   descriptionSrc,
   slotDocs = true,
   eventDocs = true,
+  cssPropertiesDocs = true,
+  cssPartsDocs = true,
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -50,6 +54,8 @@ export function generateCustomData({
         descriptionSrc,
         slotDocs,
         eventDocs,
+        cssPartsDocs,
+        cssPropertiesDocs,
       };
 
       generateCustomDataFile(customElementsManifest);
@@ -138,10 +144,20 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
       has(component.events) && config.eventDocs
         ? `\n\n**Events:**\n ${getEventDocs(component)}`
         : "";
+    const cssProps =
+      has(component.cssProperties) && config.cssPropertiesDocs
+        ? `\n\n**CSS Custom Properties:**\n ${getCssPropertyDocs(
+            component.cssProperties
+          )}`
+        : "";
+    const parts =
+      has(component.cssProperties) && config.cssPropertiesDocs
+        ? `\n\n**CSS Parts:**\n ${getCssPartsDocs(component.cssParts)}`
+        : "";
 
     return {
       name: component.tagName,
-      description: getDescription(component) + slots + events,
+      description: getDescription(component) + slots + events + cssProps + parts,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]
@@ -221,7 +237,7 @@ function getComponentAttributes(component: Declaration) {
 
 function getAttributeValues(attr: Attribute): Value[] {
   return attr.type?.text
-    .split("|")
+    .split(",")
     .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
     .map((type) => {
       return {
@@ -233,6 +249,21 @@ function getAttributeValues(attr: Attribute): Value[] {
 function getEventDocs(component: Declaration) {
   return component.events
     ?.map((event) => `- **${event.name}** - ${event.description}`)
+    .join("\n");
+}
+
+function getCssPropertyDocs(properties: CssProperty[]) {
+  return properties
+    ?.map(
+      (prop) =>
+        `- **${prop.name}** - ${prop.description} _(default: ${prop.default})_`
+    )
+    .join("\n");
+}
+
+function getCssPartsDocs(parts: CssPart[]) {
+  return parts
+    ?.map((part) => `- **${part.name}** - ${part.description}`)
     .join("\n");
 }
 
