@@ -85,6 +85,10 @@ The configuration has the following optional parameters:
   slotDocs?: boolean;
   /** Displays the event section of the element description */
   eventDocs?: boolean;
+  /** Displays the CSS custom properties section of the element description */
+  cssPropertiesDocs?: boolean;
+  /** Displays the CSS parts section of the element description */
+  cssPartsDocs?: boolean;
 }
 ```
 
@@ -100,22 +104,78 @@ export default {
       outdir: 'dist',
 
       /** name of the file with you component's custom data - default is "vscode.html-custom-data.json" */
-      filename: 'my-library-custom-data.json',
+      filename: 'my-library.html-custom-data.json',
 
       /** class names of any components you would like to exclude from the custom data */
       exclude: ['MyInternalElement'],
 
       /** The property name from the component object constructed by the CEM Analyzer */
-      descriptionSrc: "description";
+      descriptionSrc: "description",
 
       /** Displays the slot section of the element description */
-      slotDocs: true;
+      slotDocs: true,
 
       /** Displays the event section of the element description */
-      eventDocs: true;
+      eventDocs: true,
+
+      /** Displays the CSS custom properties section of the element description */
+      cssPropertiesDocs: true,
+
+      /** Displays the CSS parts section of the element description */
+      cssPartsDocs: true
     }),
   ],
 };
+```
+
+## Example
+
+Here is a basic example of a component configuration using jsDoc:
+
+```ts
+/**
+ *
+ * Radio groups are used to group multiple radio buttons so they function as a single form control. 
+ * 
+ * Here is the [documentation](https://my-site.com/docs.md).
+ *
+ * Use it like this:
+ * ```html
+ * <radio-group value="2" size="3">
+ *   <span slot="label">My Label</span>
+ *   <radio-button value="1">Option 1</radio-button>
+ *   <radio-button value="2">Option 2</radio-button>
+ *   <radio-button value="3">Option 3</radio-button>
+ * </radio-group>
+ * ```
+ *
+ * @tag radio-group
+ * @tagname radio-group
+ *
+ * @attr {boolean} disabled - Disables the element
+ * @attribute {string} value - The value of the selected radio
+ * @attribute {1,2,3,4} size - This will control the size of radio buttons
+ *
+ * @csspart bar - Styles the color of bar
+ *
+ * @slot - add radio buttons to the `default` slot to create options to your radio group
+ * @slot label - placeholder for the radio group label
+ *
+ * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the color of foo
+ * @cssproperty [--background-color=red] - Controls the color of bar
+ *
+ * @prop {boolean} prop1 - this toggles some unseen feature
+ * @property {number} prop2 - this will adjust the width of the unit
+ *
+ * @fires custom-event - some description for custom-event
+ * @fires {Event} typed-event - some description for typed-event
+ * @event {CustomEvent} typed-custom-event - some description for typed-custom-event
+ *
+ * @reference Documentation - https://my-site.com/docs
+ * @reference MDN - https://developer.mozilla.org/en-US/
+ *
+ */
+class RadioGroup extends HTMLElement {}
 ```
 
 ## Tag Mapping
@@ -125,7 +185,7 @@ export default {
 | Tag                      | Description                                                                                                                                                                                     |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@summary` / description | This provides the description for the custom element when autocomplete is used or the element is hovered. If no summary is provided, it will fall back to the `description` if it is available. |
-| `@attr` / `@attribute`   | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options.                                      |
+| `@attr` / `@attribute`   | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options. Values can also be defined in the jsDoc using comma or pipe delimited values                                      |
 | `@reference`             | This is a custom tag for this plugin. It creates reference links at the bottom of the information bubble. Multiple references are supported.                                                    |
 
 The `@summary` and `@attr` / `@attribute` descriptions have limited markdown support and enable you to style text, create links, and add code snippets.
