@@ -197,3 +197,9 @@ These values can be added in your component's jsDoc. The `var()` wrapper will be
 ```
 
 ![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
+
+## CSS
+
+Component-specific [CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) and [CSS Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) are included in the component documentation. These can be hidden using the `cssPropertiesDocs` and `cssPartsDocs` configuration options respectively.
+
+![css properties and css parts sections of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css.png?raw=true)
