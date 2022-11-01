@@ -14,5 +14,9 @@ export default {
   /** Output CEM path to `package.json`, defaults to true */
   packagejson: false,
   /** Provide custom plugins */
-  plugins: [generateCustomData({ outdir: "./demo" })],
+  plugins: [generateCustomData({ outdir: "./demo", labels: {
+    eventHeading: "Eldon",
+    cssPropertiesHeading: "CSS Pantry",
+    cssPartsHeading: "CSS Farts",
+  } })],
 };

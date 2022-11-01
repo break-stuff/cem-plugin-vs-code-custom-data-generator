@@ -30,6 +30,10 @@ export function generateCustomData({
   eventDocs = true,
   cssPropertiesDocs = true,
   cssPartsDocs = true,
+  slotsLabel = "Slots",
+  eventsLabel = "Events",
+  cssPropertiesLabel = "CSS Properties",
+  cssPartsLabel = "CSS Parts",
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -56,6 +60,10 @@ export function generateCustomData({
         eventDocs,
         cssPartsDocs,
         cssPropertiesDocs,
+        slotsLabel,
+        eventsLabel,
+        cssPropertiesLabel,
+        cssPartsLabel
       };
 
       generateCustomDataFile(customElementsManifest);
@@ -138,26 +146,27 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
   return components.map((component) => {
     const slots =
       has(component.slots) && config.slotDocs
-        ? `\n\n**Slots:**\n ${getSlotDocs(component)}`
+        ? `\n\n**${config.labels?.slotHeading}:**\n ${getSlotDocs(component)}`
         : "";
     const events =
       has(component.events) && config.eventDocs
-        ? `\n\n**Events:**\n ${getEventDocs(component)}`
+        ? `\n\n**${config.labels?.eventHeading}:**\n ${getEventDocs(component)}`
         : "";
     const cssProps =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**CSS Custom Properties:**\n ${getCssPropertyDocs(
+        ? `\n\n**${config.labels?.cssPropertiesHeading}:**\n ${getCssPropertyDocs(
             component.cssProperties
           )}`
         : "";
     const parts =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**CSS Parts:**\n ${getCssPartsDocs(component.cssParts)}`
+        ? `\n\n**${config.labels?.cssPartsHeading}:**\n ${getCssPartsDocs(component.cssParts)}`
         : "";
 
     return {
       name: component.tagName,
-      description: getDescription(component) + slots + events + cssProps + parts,
+      description:
+        getDescription(component) + slots + events + cssProps + parts,
       attributes: getComponentAttributes(component),
       references: componentReferences
         ? componentReferences[`${component.tagName}`]

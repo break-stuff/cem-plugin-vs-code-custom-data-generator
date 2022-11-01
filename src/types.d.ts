@@ -17,6 +17,21 @@ export interface Options {
   cssPropertiesDocs?: boolean;
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
+  /** Controls the Slots heading label */
+  slotsLabel?: string;
+  /** Controls the Slots heading label */
+  eventsLabel?: string;
+  /** Controls the Slots heading label */
+  cssPropertiesLabel?: string;
+  /** Controls the Slots heading label */
+  cssPartsLabel?: string;
+}
+
+interface DescriptionLabels {
+  slotHeading?: string;
+  eventHeading?: string;
+  cssPropertiesHeading?: string;
+  cssPartsHeading?: string;
 }
 
 export interface Tag {
@@ -49,7 +64,6 @@ interface Reference {
   url: string;
 }
 
-
 /**
  *
  * CEM TYPES
@@ -72,7 +86,6 @@ interface Module {
   declarations: Declaration[];
   exports: Export[];
 }
-
 
 export interface Declaration {
   kind: string;
