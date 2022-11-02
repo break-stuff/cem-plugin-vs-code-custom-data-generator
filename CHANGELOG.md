@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.0.0
+
+- Add component section label overrides
+
 ## 1.0.0.beta9
 
 - Add docs and config for CSS custom properties and CSS parts

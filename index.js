@@ -4,12 +4,13 @@ import prettier from "prettier";
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences = {};
 let config = {};
-export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {
-    slotHeading: "Slots",
-    eventHeading: "Events",
-    cssPropertiesHeading: "CSS Properties",
-    cssPartsHeading: "CSS Parts",
-}, } = {}) {
+const defaultLabels = {
+    slots: "Slots",
+    events: "Events",
+    cssProperties: "CSS Properties",
+    cssParts: "CSS Parts",
+};
+export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {} } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -32,7 +33,7 @@ export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-
                 eventDocs,
                 cssPartsDocs,
                 cssPropertiesDocs,
-                labels
+                labels: { ...defaultLabels, ...labels }
             };
             generateCustomDataFile(customElementsManifest);
         },
@@ -93,16 +94,16 @@ function getTagList(customElementsManifest) {
     const components = getComponents(customElementsManifest);
     return components.map((component) => {
         const slots = has(component.slots) && config.slotDocs
-            ? `\n\n**${config.labels?.slotHeading}:**\n ${getSlotDocs(component)}`
+            ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(component)}`
             : "";
         const events = has(component.events) && config.eventDocs
-            ? `\n\n**${config.labels?.eventHeading}:**\n ${getEventDocs(component)}`
+            ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(component)}`
             : "";
         const cssProps = has(component.cssProperties) && config.cssPropertiesDocs
-            ? `\n\n**${config.labels?.cssPropertiesHeading}:**\n ${getCssPropertyDocs(component.cssProperties)}`
+            ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(component.cssProperties)}`
             : "";
         const parts = has(component.cssProperties) && config.cssPropertiesDocs
-            ? `\n\n**${config.labels?.cssPartsHeading}:**\n ${getCssPartsDocs(component.cssParts)}`
+            ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(component.cssParts)}`
             : "";
         return {
             name: component.tagName,

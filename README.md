@@ -89,6 +89,13 @@ The configuration has the following optional parameters:
   cssPropertiesDocs?: boolean;
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
+  /** Overrides the default section labels in the component description */
+  labels?: {
+    slots?: string;
+    events?: string;
+    cssProperties?: string;
+    cssParts?: string;
+  };
 }
 ```
 
@@ -122,7 +129,15 @@ export default {
       cssPropertiesDocs: true,
 
       /** Displays the CSS parts section of the element description */
-      cssPartsDocs: true
+      cssPartsDocs: true,
+
+      /** Overrides the default section labels in the component description */
+      labels: {
+        slots: "Slot Section",
+        events: "Custom Events",
+        cssProperties: "CSS Variables",
+        cssParts: "Style Hooks"
+      },
     }),
   ],
 };
@@ -263,3 +278,26 @@ These values can be added in your component's jsDoc. The `var()` wrapper will be
 Component-specific [CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) and [CSS Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) are included in the component documentation. These can be hidden using the `cssPropertiesDocs` and `cssPartsDocs` configuration options respectively.
 
 ![css properties and css parts sections of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css.png?raw=true)
+
+## Labels
+
+There may be instances where you may want to translate or override the default section headers. Using the `labels` configuration you can change one or all of the headers for the component description sections.
+
+```js
+// custom-elements-manifest.config.js
+export default {
+  plugins: [
+    generateCustomData({
+      ...
+
+      /** Overrides the default section labels in the component description */
+      labels: {
+        slots: "Placeholders",
+        events: "事件",
+        cssProperties: "Propiedades CSS",
+        cssParts: "Style Hooks"
+      },
+    }),
+  ],
+};
+```

@@ -19,6 +19,12 @@ import {
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences: { [key: string]: Reference[] } = {};
 let config: Options = {};
+const defaultLabels = {
+  slots: "Slots",
+  events: "Events",
+  cssProperties: "CSS Properties",
+  cssParts: "CSS Parts",
+};
 
 export function generateCustomData({
   outdir = "./",
@@ -30,10 +36,7 @@ export function generateCustomData({
   eventDocs = true,
   cssPropertiesDocs = true,
   cssPartsDocs = true,
-  slotsLabel = "Slots",
-  eventsLabel = "Events",
-  cssPropertiesLabel = "CSS Properties",
-  cssPartsLabel = "CSS Parts",
+  labels = {}
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -60,10 +63,7 @@ export function generateCustomData({
         eventDocs,
         cssPartsDocs,
         cssPropertiesDocs,
-        slotsLabel,
-        eventsLabel,
-        cssPropertiesLabel,
-        cssPartsLabel
+        labels: {...defaultLabels, ...labels}
       };
 
       generateCustomDataFile(customElementsManifest);
@@ -146,21 +146,23 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
   return components.map((component) => {
     const slots =
       has(component.slots) && config.slotDocs
-        ? `\n\n**${config.labels?.slotHeading}:**\n ${getSlotDocs(component)}`
+        ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(component)}`
         : "";
     const events =
       has(component.events) && config.eventDocs
-        ? `\n\n**${config.labels?.eventHeading}:**\n ${getEventDocs(component)}`
+        ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(component)}`
         : "";
     const cssProps =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssPropertiesHeading}:**\n ${getCssPropertyDocs(
-            component.cssProperties
-          )}`
+        ? `\n\n**${
+            config.labels?.cssProperties
+          }:**\n ${getCssPropertyDocs(component.cssProperties)}`
         : "";
     const parts =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssPartsHeading}:**\n ${getCssPartsDocs(component.cssParts)}`
+        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(
+            component.cssParts
+          )}`
         : "";
 
     return {

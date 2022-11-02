@@ -25,13 +25,15 @@ export interface Options {
   cssPropertiesLabel?: string;
   /** Controls the Slots heading label */
   cssPartsLabel?: string;
+  /** Overrides the default section labels in the component description */
+  labels?: DescriptionLabels;
 }
 
 interface DescriptionLabels {
-  slotHeading?: string;
-  eventHeading?: string;
-  cssPropertiesHeading?: string;
-  cssPartsHeading?: string;
+  slots?: string;
+  events?: string;
+  cssProperties?: string;
+  cssParts?: string;
 }
 
 export interface Tag {
