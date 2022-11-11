@@ -17,10 +17,6 @@ export default {
   plugins: [
     generateCustomData({
       outdir: "./demo",
-      labels: {
-        events: "Eldon",
-        slots: "Slants"
-      },
     }),
   ],
 };

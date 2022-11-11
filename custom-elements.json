@@ -64,7 +64,7 @@
               "type": {
                 "text": "--radius-sm,--radius-md,--radius-lg"
               },
-              "description": "Controls the color of foo",
+              "description": "Controls the border radius of the radio buttons",
               "name": "--border-radius"
             },
             {

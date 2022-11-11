@@ -3,7 +3,7 @@
   "properties": [
     {
       "name": "--border-radius",
-      "description": "Controls the color of foo",
+      "description": "Controls the border radius of the radio buttons",
       "values": [
         { "name": "var(--radius-sm)" },
         { "name": "var(--radius-md)" },
