@@ -24,7 +24,7 @@
  * @slot - add radio buttons to the `default` slot to create options to your radio group
  * @slot label - placeholder for the radio group label
  *
- * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the border radius of the radio buttons
+ * @cssprop {set:radiuses} --border-radius - Controls the border radius of the radio buttons
  * @cssproperty [--background-color=red] - Controls the color of bar
  *
  * @prop {boolean} prop1 - this toggles some unseen feature

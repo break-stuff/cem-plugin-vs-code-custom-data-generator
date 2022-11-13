@@ -17,6 +17,16 @@ export default {
   plugins: [
     generateCustomData({
       outdir: "./demo",
+      cssSets: [
+        {
+          name: "radiuses",
+          values: [
+            { name: "--radius-sm", description: '2px' },
+            { name: "--radius-md", description: '4px' },
+            { name: "--radius-lg", description: '8px' },
+          ],
+        },
+      ],
     }),
   ],
 };

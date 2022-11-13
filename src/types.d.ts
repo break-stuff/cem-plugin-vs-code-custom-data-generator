@@ -27,6 +27,8 @@ export interface Options {
   cssPartsLabel?: string;
   /** Overrides the default section labels in the component description */
   labels?: DescriptionLabels;
+  /** Creates reusable CSS values for consistency in components */
+  cssSets?: CssSet[];
 }
 
 interface DescriptionLabels {
@@ -34,6 +36,16 @@ interface DescriptionLabels {
   events?: string;
   cssProperties?: string;
   cssParts?: string;
+}
+
+export interface CssSet {
+  name: string;
+  values: CssValue[] | string[];
+}
+
+export interface CssValue {
+  name: string;
+  description?: string;
 }
 
 export interface Tag {

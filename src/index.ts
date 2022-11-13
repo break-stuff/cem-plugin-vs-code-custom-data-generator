@@ -5,6 +5,7 @@ import {
   Attribute,
   CssPart,
   CssProperty,
+  CssValue,
   CustomElementsManifest,
   Declaration,
   Options,
@@ -36,7 +37,8 @@ export function generateCustomData({
   eventDocs = true,
   cssPropertiesDocs = true,
   cssPartsDocs = true,
-  labels = {}
+  labels = {},
+  cssSets = [],
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -63,7 +65,8 @@ export function generateCustomData({
         eventDocs,
         cssPartsDocs,
         cssPropertiesDocs,
-        labels: {...defaultLabels, ...labels}
+        labels: { ...defaultLabels, ...labels },
+        cssSets,
       };
 
       generateCustomDataFile(customElementsManifest);
@@ -124,21 +127,58 @@ function getPropertyList(
           return {
             name: prop.name,
             description: prop.description,
-            values: prop?.type?.text
-              ? prop.type.text.split(",").map((x) => {
-                  const propName = x.trim();
-                  return {
-                    name: propName.startsWith("--")
-                      ? `var(${propName})`
-                      : propName,
-                  };
-                })
-              : [],
+            values: getCssPropertyValues(prop?.type?.text),
           };
         }) || []
       );
     }) || []
   ).flat();
+}
+
+function getCssPropertyValues(value: string): CssValue[] {
+  if (!value) {
+    return [];
+  }
+
+  if (value.trim().startsWith("set")) {
+    return getValueSet(value);
+  }
+
+  return getCssValues(value);
+}
+
+function getValueSet(value: string): CssValue[] {
+  const setName = value.split(":")[1];
+  const valueSet =
+    config.cssSets?.find((x) => x.name.trim() === setName)?.values || [];
+
+  return valueSet.map((x) => {
+    if (typeof x === "string") {
+      return {
+        name: getCssNameValue(x),
+      };
+    } else {
+      x.name = getCssNameValue(x.name);
+      return x;
+    }
+  });
+}
+
+function getCssValues(value: string): CssValue[] {
+  return (
+    value
+      ? value.split(",").map((x) => {
+          const propName = x.trim();
+          return {
+            name: getCssNameValue(propName),
+          };
+        })
+      : []
+  ).reverse();
+}
+
+function getCssNameValue(value: string) {
+  return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
 }
 
 function getTagList(customElementsManifest: CustomElementsManifest) {
@@ -154,9 +194,9 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
         : "";
     const cssProps =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${
-            config.labels?.cssProperties
-          }:**\n ${getCssPropertyDocs(component.cssProperties)}`
+        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
+            component.cssProperties
+          )}`
         : "";
     const parts =
       has(component.cssProperties) && config.cssPropertiesDocs

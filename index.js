@@ -10,7 +10,7 @@ const defaultLabels = {
     cssProperties: "CSS Properties",
     cssParts: "CSS Parts",
 };
-export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {} } = {}) {
+export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {}, cssSets = [], } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -33,7 +33,8 @@ export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-
                 eventDocs,
                 cssPartsDocs,
                 cssPropertiesDocs,
-                labels: { ...defaultLabels, ...labels }
+                labels: { ...defaultLabels, ...labels },
+                cssSets,
             };
             generateCustomDataFile(customElementsManifest);
         },
@@ -76,19 +77,47 @@ function getPropertyList(customElementsManifest) {
             return {
                 name: prop.name,
                 description: prop.description,
-                values: prop?.type?.text
-                    ? prop.type.text.split(",").map((x) => {
-                        const propName = x.trim();
-                        return {
-                            name: propName.startsWith("--")
-                                ? `var(${propName})`
-                                : propName,
-                        };
-                    })
-                    : [],
+                values: getCssPropertyValues(prop?.type?.text),
             };
         }) || []);
     }) || []).flat();
+}
+function getCssPropertyValues(value) {
+    if (!value) {
+        return [];
+    }
+    if (value.trim().startsWith("set")) {
+        return getValueSet(value);
+    }
+    return getCssValues(value);
+}
+function getValueSet(value) {
+    const setName = value.split(":")[1];
+    const valueSet = config.cssSets?.find((x) => x.name.trim() === setName)?.values || [];
+    return valueSet.map((x) => {
+        if (typeof x === "string") {
+            return {
+                name: getCssNameValue(x),
+            };
+        }
+        else {
+            x.name = getCssNameValue(x.name);
+            return x;
+        }
+    });
+}
+function getCssValues(value) {
+    return (value
+        ? value.split(",").map((x) => {
+            const propName = x.trim();
+            return {
+                name: getCssNameValue(propName),
+            };
+        })
+        : []).reverse();
+}
+function getCssNameValue(value) {
+    return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
 }
 function getTagList(customElementsManifest) {
     const components = getComponents(customElementsManifest);

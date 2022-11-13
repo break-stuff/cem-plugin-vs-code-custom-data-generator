@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.1.0
+
+- Add CSS Sets feature
+
 ## 1.0.0
 
 - Add component section label overrides
