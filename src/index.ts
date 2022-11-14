@@ -1,45 +1,14 @@
-import fs from "fs";
-import path from "path";
-import prettier from "prettier";
 import {
-  Attribute,
-  CssPart,
-  CssProperty,
-  CssValue,
-  CustomElementsManifest,
-  Declaration,
-  Options,
-  Params,
-  Reference,
-  Tag,
-  TagAttribute,
-  Value,
-  VsCssProperty,
-} from "./types";
+  generateCustomDataFile,
+  logPluginInit,
+  setComponentReferences,
+  updateConfig,
+} from "./custom-data-generator/generator.js";
+import type { Options, Params } from "./types";
 
-const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
-let componentReferences: { [key: string]: Reference[] } = {};
-let config: Options = {};
-const defaultLabels = {
-  slots: "Slots",
-  events: "Events",
-  cssProperties: "CSS Properties",
-  cssParts: "CSS Parts",
-};
+export function generateCustomData(params: Options = {}) {
+  updateConfig(params);
 
-export function generateCustomData({
-  outdir = "./",
-  htmlFileName = "vscode.html-custom-data.json",
-  cssFileName = "vscode.css-custom-data.json",
-  exclude = [],
-  descriptionSrc,
-  slotDocs = true,
-  eventDocs = true,
-  cssPropertiesDocs = true,
-  cssPartsDocs = true,
-  labels = {},
-  cssSets = [],
-}: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
     // @ts-ignore
@@ -47,307 +16,306 @@ export function generateCustomData({
       setComponentReferences(ts, node, moduleDoc);
     },
     packageLinkPhase({ customElementsManifest }: Params) {
-      console.log(
-        "\u001b[" +
-          32 +
-          "m" +
-          "[vs-code-custom-data-generator] - Generating Config" +
-          "\u001b[0m"
-      );
-
-      config = {
-        exclude,
-        htmlFileName,
-        cssFileName,
-        outdir,
-        descriptionSrc,
-        slotDocs,
-        eventDocs,
-        cssPartsDocs,
-        cssPropertiesDocs,
-        labels: { ...defaultLabels, ...labels },
-        cssSets,
-      };
-
+      logPluginInit();
       generateCustomDataFile(customElementsManifest);
     },
   };
 }
 
-function setComponentReferences(ts: any, node: any, moduleDoc: any) {
-  if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-    const references = getReferences(node);
-    updateReferences(references, node, moduleDoc);
-  }
-}
+// function updateConfig(params: Options) {
+//   config = {...config, ...params};
+//   config.labels = {...defaultLabels, ...params?.labels}
+// }
 
-function getReferences(node: any) {
-  const docs = getDocsByTagName(node, "reference");
-  return docs
-    ?.map((tags: any) =>
-      tags?.map((doc: any) => {
-        const values = doc?.comment.split(/ - (.*)/s);
+// function logPluginInit() {
+//   console.log(
+//     "\u001b[" +
+//       32 +
+//       "m" +
+//       "[vs-code-custom-data-generator] - Generating config files..." +
+//       "\u001b[0m"
+//   );
+// }
 
-        if (values && values.length > 1) {
-          return {
-            name: values[0].trim(),
-            url: values[1].trim(),
-          };
-        }
-      })
-    )
-    .flat();
-}
+// function setComponentReferences(ts: any, node: any, moduleDoc: any) {
+//   if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
+//     return;
+//   }
 
-function updateReferences(references: Reference[], node: any, moduleDoc: any) {
-  if (references?.length) {
-    const className: string = node.name.getText();
-    const component: Declaration = moduleDoc?.declarations?.find(
-      (dec: Declaration) => dec.name === className
-    );
+//   const references = getReferences(node);
+//   updateReferences(references, node, moduleDoc);
+// }
 
-    componentReferences[`${component.tagName}`] = references as Reference[];
-  }
-}
+// function getReferences(node: any) {
+//   const docs = getDocsByTagName(node, "reference");
+//   return docs
+//     ?.map((tags: any) =>
+//       tags?.map((doc: any) => {
+//         const values = doc?.comment.split(/ - (.*)/s);
 
-function getDocsByTagName(node: any, tagName: string) {
-  return node?.jsDoc?.map((doc: any) =>
-    doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
-  );
-}
+//         if (values && values.length > 1) {
+//           return {
+//             name: values[0].trim(),
+//             url: values[1].trim(),
+//           };
+//         }
+//       })
+//     )
+//     .flat();
+// }
 
-function getPropertyList(
-  customElementsManifest: CustomElementsManifest
-): VsCssProperty[] {
-  const components = getComponents(customElementsManifest);
-  return (
-    components?.map((component) => {
-      return (
-        component.cssProperties?.map((prop) => {
-          return {
-            name: prop.name,
-            description: prop.description,
-            values: getCssPropertyValues(prop?.type?.text),
-          };
-        }) || []
-      );
-    }) || []
-  ).flat();
-}
+// function updateReferences(references: Reference[], node: any, moduleDoc: any) {
+//   if (!references?.length) {
+//     return;
+//   }
 
-function getCssPropertyValues(value: string): CssValue[] {
-  if (!value) {
-    return [];
-  }
+//   const className: string = node.name.getText();
+//   const component: Declaration = moduleDoc?.declarations?.find(
+//     (dec: Declaration) => dec.name === className
+//   );
 
-  if (value.trim().startsWith("set")) {
-    return getValueSet(value);
-  }
+//   componentReferences[`${component.tagName}`] = references as Reference[];
+// }
 
-  return getCssValues(value);
-}
+// function getDocsByTagName(node: any, tagName: string) {
+//   return node?.jsDoc?.map((doc: any) =>
+//     doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
+//   );
+// }
 
-function getValueSet(value: string): CssValue[] {
-  const setName = value.split(":")[1];
-  const valueSet =
-    config.cssSets?.find((x) => x.name.trim() === setName)?.values || [];
+// function getPropertyList(
+//   customElementsManifest: CustomElementsManifest
+// ): VsCssProperty[] {
+//   const components = getComponents(customElementsManifest);
+//   return (
+//     components?.map((component) => {
+//       return (
+//         component.cssProperties?.map((prop) => {
+//           return {
+//             name: prop.name,
+//             description: prop.description,
+//             values: getCssPropertyValues(prop?.type?.text),
+//           };
+//         }) || []
+//       );
+//     }) || []
+//   ).flat();
+// }
 
-  return valueSet.map((x) => {
-    if (typeof x === "string") {
-      return {
-        name: getCssNameValue(x),
-      };
-    } else {
-      x.name = getCssNameValue(x.name);
-      return x;
-    }
-  });
-}
+// function getCssPropertyValues(value: string): CssValue[] {
+//   if (!value) {
+//     return [];
+//   }
 
-function getCssValues(value: string): CssValue[] {
-  return (
-    value
-      ? value.split(",").map((x) => {
-          const propName = x.trim();
-          return {
-            name: getCssNameValue(propName),
-          };
-        })
-      : []
-  ).reverse();
-}
+//   if (value.trim().startsWith("set")) {
+//     return getValueSet(value);
+//   }
 
-function getCssNameValue(value: string) {
-  return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
-}
+//   return getCssValues(value);
+// }
 
-function getTagList(customElementsManifest: CustomElementsManifest) {
-  const components = getComponents(customElementsManifest);
-  return components.map((component) => {
-    const slots =
-      has(component.slots) && config.slotDocs
-        ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(component)}`
-        : "";
-    const events =
-      has(component.events) && config.eventDocs
-        ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(component)}`
-        : "";
-    const cssProps =
-      has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
-            component.cssProperties
-          )}`
-        : "";
-    const parts =
-      has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(
-            component.cssParts
-          )}`
-        : "";
+// export function getValueSet(value: string): CssValue[] {
+//   console.log("VALUE SET", value);
+//   const setName = value.split(":")[1];
+//   const valueSet =
+//     config.cssSets?.find((x) => x.name.trim() === setName)?.values || [];
 
-    return {
-      name: component.tagName,
-      description:
-        getDescription(component) + slots + events + cssProps + parts,
-      attributes: getComponentAttributes(component),
-      references: componentReferences
-        ? componentReferences[`${component.tagName}`]
-        : [],
-    };
-  });
-}
+//   return valueSet.map((x) => {
+//     if (typeof x === "string") {
+//       return {
+//         name: getCssNameValue(x),
+//       };
+//     } else {
+//       x.name = getCssNameValue(x.name);
+//       return x;
+//     }
+//   });
+// }
 
-function getDescription(component: Declaration) {
-  return (
-    (config.descriptionSrc
-      ? component[config.descriptionSrc]
-      : component.summary || component.description
-    )?.replaceAll("\\n", "\n") || ""
-  );
-}
+// function getCssValues(value: string): CssValue[] {
+//   return (
+//     value
+//       ? value.split(",").map((x) => {
+//           const propName = x.trim();
+//           return {
+//             name: getCssNameValue(propName),
+//           };
+//         })
+//       : []
+//   ).reverse();
+// }
 
-function generateCustomDataFile(
-  customElementsManifest: CustomElementsManifest
-) {
-  createOutdir();
+// function getCssNameValue(value: string) {
+//   return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
+// }
 
-  const tags: Tag[] = getTagList(customElementsManifest);
-  const cssPropertied = getPropertyList(customElementsManifest);
+// function getTagList(customElementsManifest: CustomElementsManifest) {
+//   const components = getComponents(customElementsManifest);
+//   return components.map((component) => {
+//     const slots =
+//       has(component.slots) && config.slotDocs
+//         ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(component)}`
+//         : "";
+//     const events =
+//       has(component.events) && config.eventDocs
+//         ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(component)}`
+//         : "";
+//     const cssProps =
+//       has(component.cssProperties) && config.cssPropertiesDocs
+//         ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
+//             component.cssProperties
+//           )}`
+//         : "";
+//     const parts =
+//       has(component.cssProperties) && config.cssPropertiesDocs
+//         ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(
+//             component.cssParts
+//           )}`
+//         : "";
 
-  saveFile(
-    config.outdir!,
-    config.htmlFileName!,
-    getCustomHtmlDataFileContents(tags)
-  );
+//     return {
+//       name: component.tagName,
+//       description:
+//         getDescription(component) + slots + events + cssProps + parts,
+//       attributes: getComponentAttributes(component),
+//       references: componentReferences
+//         ? componentReferences[`${component.tagName}`]
+//         : [],
+//     };
+//   });
+// }
 
-  saveFile(
-    config.outdir!,
-    config.cssFileName!,
-    getCustomCssDataFileContents(cssPropertied)
-  );
-}
+// function getDescription(component: Declaration) {
+//   return (
+//     (config.descriptionSrc
+//       ? component[config.descriptionSrc]
+//       : component.summary || component.description
+//     )?.replaceAll("\\n", "\n") || ""
+//   );
+// }
 
-function createOutdir() {
-  if (config.outdir !== "./" && !fs.existsSync(config.outdir!)) {
-    fs.mkdirSync(config.outdir!);
-  }
-}
+// function generateCustomDataFile(
+//   customElementsManifest: CustomElementsManifest
+// ) {
+//   createOutdir();
 
-function getComponents(customElementsManifest: CustomElementsManifest) {
-  return customElementsManifest.modules
-    ?.map((mod) =>
-      mod?.declarations?.filter(
-        (dec: Declaration) =>
-          config.exclude &&
-          !config.exclude.includes(dec.name) &&
-          (dec.customElement || dec.tagName)
-      )
-    )
-    .flat();
-}
+//   const tags: Tag[] = getTagList(customElementsManifest);
+//   const cssPropertied = getPropertyList(customElementsManifest);
 
-function getComponentAttributes(component: Declaration) {
-  const attributes: TagAttribute[] = [];
-  component?.attributes?.forEach((attr) => {
-    const existingAttr = attributes.find(
-      (x) => x.name === attr.name || x.name === attr.fieldName
-    );
-    if (existingAttr) {
-      return;
-    }
+//   saveFile(
+//     config.outdir!,
+//     config.htmlFileName!,
+//     getCustomHtmlDataFileContents(tags)
+//   );
 
-    attributes.push({
-      name: attr.fieldName || attr.name,
-      description: attr.description,
-      values: getAttributeValues(attr),
-    } as TagAttribute);
-  });
+//   saveFile(
+//     config.outdir!,
+//     config.cssFileName!,
+//     getCustomCssDataFileContents(cssPropertied)
+//   );
+// }
 
-  return attributes;
-}
+// function createOutdir() {
+//   if (config.outdir !== "./" && !fs.existsSync(config.outdir!)) {
+//     fs.mkdirSync(config.outdir!);
+//   }
+// }
 
-function getAttributeValues(attr: Attribute): Value[] {
-  const value = attr.type?.text;
-  return (value.includes("|") ? value.split("|") : value.split(","))
-    .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
-    .map((type) => {
-      return {
-        name: type.trim(),
-      } as Value;
-    });
-}
+// function getComponents(customElementsManifest: CustomElementsManifest) {
+//   return customElementsManifest.modules
+//     ?.map((mod) =>
+//       mod?.declarations?.filter(
+//         (dec: Declaration) =>
+//           config.exclude &&
+//           !config.exclude.includes(dec.name) &&
+//           (dec.customElement || dec.tagName)
+//       )
+//     )
+//     .flat();
+// }
 
-function getEventDocs(component: Declaration) {
-  return component.events
-    ?.map((event) => `- **${event.name}** - ${event.description}`)
-    .join("\n");
-}
+// function getComponentAttributes(component: Declaration) {
+//   const attributes: TagAttribute[] = [];
+//   component?.attributes?.forEach((attr) => {
+//     const existingAttr = attributes.find(
+//       (x) => x.name === attr.name || x.name === attr.fieldName
+//     );
+//     if (existingAttr) {
+//       return;
+//     }
 
-function getCssPropertyDocs(properties: CssProperty[]) {
-  return properties
-    ?.map(
-      (prop) =>
-        `- **${prop.name}** - ${prop.description} _(default: ${prop.default})_`
-    )
-    .join("\n");
-}
+//     attributes.push({
+//       name: attr.fieldName || attr.name,
+//       description: attr.description,
+//       values: getAttributeValues(attr),
+//     } as TagAttribute);
+//   });
 
-function getCssPartsDocs(parts: CssPart[]) {
-  return parts
-    ?.map((part) => `- **${part.name}** - ${part.description}`)
-    .join("\n");
-}
+//   return attributes;
+// }
 
-function getSlotDocs(component: Declaration) {
-  return component.slots
-    ?.map(
-      (slot) =>
-        `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${
-          slot.description
-        }`
-    )
-    .join("\n");
-}
+// function getAttributeValues(attr: Attribute): Value[] {
+//   const value = attr.type?.text;
+//   return (value.includes("|") ? value.split("|") : value.split(","))
+//     .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
+//     .map((type) => {
+//       return {
+//         name: type.trim(),
+//       } as Value;
+//     });
+// }
 
-function saveFile(outdir: string, fileName: string, contents: string) {
-  fs.writeFileSync(
-    path.join(outdir, fileName),
-    prettier.format(contents, { parser: "json" })
-  );
-}
+// function getEventDocs(component: Declaration) {
+//   return component.events
+//     ?.map((event) => `- **${event.name}** - ${event.description}`)
+//     .join("\n");
+// }
 
-function getCustomHtmlDataFileContents(tags: Tag[]) {
-  return `{
-    "version": 1.1,
-    "tags": ${JSON.stringify(tags)}
-  }`;
-}
+// function getCssPropertyDocs(properties: CssProperty[]) {
+//   return properties
+//     ?.map(
+//       (prop) =>
+//         `- **${prop.name}** - ${prop.description} _(default: ${prop.default})_`
+//     )
+//     .join("\n");
+// }
 
-function getCustomCssDataFileContents(properties: VsCssProperty[]) {
-  return `{
-    "version": 1.1,
-    "properties": ${JSON.stringify(properties)}
-  }`;
-}
+// function getCssPartsDocs(parts: CssPart[]) {
+//   return parts
+//     ?.map((part) => `- **${part.name}** - ${part.description}`)
+//     .join("\n");
+// }
 
-const has = (arr: any[]) => Array.isArray(arr) && arr.length > 0;
+// function getSlotDocs(component: Declaration) {
+//   return component.slots
+//     ?.map(
+//       (slot) =>
+//         `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${
+//           slot.description
+//         }`
+//     )
+//     .join("\n");
+// }
+
+// function saveFile(outdir: string, fileName: string, contents: string) {
+//   fs.writeFileSync(
+//     path.join(outdir, fileName),
+//     prettier.format(contents, { parser: "json" })
+//   );
+// }
+
+// function getCustomHtmlDataFileContents(tags: Tag[]) {
+//   return `{
+//     "version": 1.1,
+//     "tags": ${JSON.stringify(tags)}
+//   }`;
+// }
+
+// function getCustomCssDataFileContents(properties: VsCssProperty[]) {
+//   return `{
+//     "version": 1.1,
+//     "properties": ${JSON.stringify(properties)}
+//   }`;
+// }
+
+// const has = (arr: any[]) => Array.isArray(arr) && arr.length > 0;

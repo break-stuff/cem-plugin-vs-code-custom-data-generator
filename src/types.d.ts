@@ -105,22 +105,22 @@ export interface Declaration {
   kind: string;
   description: string;
   name: string;
-  cssProperties: CssProperty[];
-  cssParts: CssPart[];
+  cssProperties?: CssProperty[];
+  cssParts?: CssPart[];
   slots: Slot[];
-  members: Member[];
-  events: Event[];
+  members?: Member[];
+  events?: Event[];
   attributes: Attribute[];
   superclass: SuperClass;
   tagName: string;
-  summary: string;
+  summary?: string;
   customElement: boolean;
 }
 interface CssProperty {
   description: string;
   name: string;
-  default: string;
-  type: Type;
+  default?: string;
+  type?: Type;
 }
 
 interface CssPart {
@@ -139,7 +139,7 @@ interface Member {
   type: Type;
   default?: string;
   description: string;
-  attribute: string;
+  attribute?: string;
   reflects?: boolean;
   privacy?: string;
   parameters?: Parameter[];
@@ -162,7 +162,7 @@ interface Return {
 
 interface Event {
   name: string;
-  type: Type;
+  type?: Type;
   description: string;
 }
 
@@ -171,12 +171,12 @@ interface Attribute {
   type: Type;
   default?: string;
   description: string;
-  fieldName: string;
+  fieldName?: string;
 }
 
 interface SuperClass {
   name: string;
-  package: string;
+  package?: string;
 }
 
 interface Export {
