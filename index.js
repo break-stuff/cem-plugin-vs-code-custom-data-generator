@@ -103,7 +103,7 @@ function getTagList(customElementsManifest) {
             ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(component.cssProperties)}`
             : "";
         const parts = has(component.cssProperties) && config.cssPropertiesDocs
-            ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(component.cssParts)}`
+            ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(component.cssParts)}`
             : "";
         return {
             name: component.tagName,
