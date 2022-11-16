@@ -1,4 +1,4 @@
-import { CustomElementsManifest } from "../types";
+import { CustomElementsManifest } from "../../types";
 
 export const customElementsManifest: CustomElementsManifest = {
   schemaVersion: "1.0.0",

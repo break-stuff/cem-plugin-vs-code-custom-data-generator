@@ -14,7 +14,7 @@ import type {
   TagAttribute,
   Value,
   VsCssProperty,
-} from "../types";
+} from "../../types";
 
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 let componentReferences: { [key: string]: Reference[] } = {};

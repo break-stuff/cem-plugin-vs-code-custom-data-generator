@@ -4,7 +4,7 @@ import {
   setComponentReferences,
   updateConfig,
 } from "./custom-data-generator/generator.js";
-import type { Options, Params } from "./types";
+import type { Options, Params } from "../types";
 
 export function generateCustomData(params: Options = {}) {
   updateConfig(params);
