@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.0.1
+
+- Add license
+
 ## 1.0.0
 
 - Add component section label overrides
