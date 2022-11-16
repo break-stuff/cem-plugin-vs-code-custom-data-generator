@@ -3,6 +3,7 @@
 ## 1.1.0
 
 - Add CSS Sets feature
+- Fix bug when hiding CSS Part docs
 
 ## 1.0.0
 

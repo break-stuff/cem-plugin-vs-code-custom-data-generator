@@ -27,6 +27,9 @@ export default {
           ],
         },
       ],
+      labels: {
+        slots: 'Slants'
+      }
     }),
   ],
 };

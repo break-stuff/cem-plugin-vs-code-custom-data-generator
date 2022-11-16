@@ -9,7 +9,6 @@ import type {
   CustomElementsManifest,
   Declaration,
   Options,
-  Params,
   Reference,
   Tag,
   TagAttribute,
@@ -40,81 +39,9 @@ export let config: Options = {
   cssSets: [],
 };
 
-export function runCustomDataGenerator(params: Options = {}) {
-  updateConfig(params);
-
-  return {
-    name: "cem-plugin-vs-code-custom-data-generator",
-    // @ts-ignore
-    analyzePhase({ ts, node, moduleDoc }) {
-      setComponentReferences(ts, node, moduleDoc);
-    },
-    packageLinkPhase({ customElementsManifest }: Params) {
-      logPluginInit();
-      generateCustomDataFile(customElementsManifest);
-    },
-  };
-}
-
 export function updateConfig(params: Options) {
   config = { ...config, ...params };
   config.labels = { ...defaultLabels, ...params?.labels };
-}
-
-export function logPluginInit() {
-  console.log(
-    "\u001b[" +
-      32 +
-      "m" +
-      "[vs-code-custom-data-generator] - Generating config files..." +
-      "\u001b[0m"
-  );
-}
-
-export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
-  if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
-    return;
-  }
-
-  const references = getReferences(node);
-  updateReferences(references, node, moduleDoc);
-}
-
-function getReferences(node: any) {
-  const docs = getDocsByTagName(node, "reference");
-  return docs
-    ?.map((tags: any) =>
-      tags?.map((doc: any) => {
-        const values = doc?.comment.split(/ - (.*)/s);
-
-        if (values && values.length > 1) {
-          return {
-            name: values[0].trim(),
-            url: values[1].trim(),
-          };
-        }
-      })
-    )
-    .flat();
-}
-
-function updateReferences(references: Reference[], node: any, moduleDoc: any) {
-  if (!references?.length) {
-    return;
-  }
-
-  const className: string = node.name.getText();
-  const component: Declaration = moduleDoc?.declarations?.find(
-    (dec: Declaration) => dec.name === className
-  );
-
-  componentReferences[`${component.tagName}`] = references as Reference[];
-}
-
-function getDocsByTagName(node: any, tagName: string) {
-  return node?.jsDoc?.map((doc: any) =>
-    doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
-  );
 }
 
 export function getPropertyList(
@@ -136,7 +63,7 @@ export function getPropertyList(
   ).flat();
 }
 
-function getCssPropertyValues(value?: string): CssValue[] {
+export function getCssPropertyValues(value?: string): CssValue[] {
   if (!value) {
     return [];
   }
@@ -166,23 +93,21 @@ export function getValueSet(value: string): CssValue[] {
 }
 
 export function getCssValues(value: string): CssValue[] {
-  return (
-    value
-      ? value.split(",").map((x) => {
-          const propName = x.trim();
-          return {
-            name: getCssNameValue(propName),
-          };
-        })
-      : []
-  );
+  return value
+    ? value.split(",").map((x) => {
+        const propName = x.trim();
+        return {
+          name: getCssNameValue(propName),
+        };
+      })
+    : [];
 }
 
 function getCssNameValue(value: string) {
   return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
 }
 
-function getTagList(customElementsManifest: CustomElementsManifest) {
+export function getTagList(customElementsManifest: CustomElementsManifest) {
   const components = getComponents(customElementsManifest);
   return components.map((component) => {
     const slots =
@@ -200,8 +125,8 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
           )}`
         : "";
     const parts =
-      has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(
+      has(component.cssParts) && config.cssPartsDocs
+        ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(
             component.cssParts!
           )}`
         : "";
@@ -230,28 +155,10 @@ function getDescription(component: Declaration) {
 export function generateCustomDataFile(
   customElementsManifest: CustomElementsManifest
 ) {
-  createOutdir();
+  const htmlTags: Tag[] = getTagList(customElementsManifest);
+  const cssProperties = getPropertyList(customElementsManifest);
 
-  const tags: Tag[] = getTagList(customElementsManifest);
-  const cssPropertied = getPropertyList(customElementsManifest);
-
-  saveFile(
-    config.outdir!,
-    config.htmlFileName!,
-    getCustomHtmlDataFileContents(tags)
-  );
-
-  saveFile(
-    config.outdir!,
-    config.cssFileName!,
-    getCustomCssDataFileContents(cssPropertied)
-  );
-}
-
-function createOutdir() {
-  if (config.outdir !== "./" && !fs.existsSync(config.outdir!)) {
-    fs.mkdirSync(config.outdir!);
-  }
+  saveCustomDataFiles(config, htmlTags, cssProperties);
 }
 
 function getComponents(customElementsManifest: CustomElementsManifest) {
@@ -330,6 +237,100 @@ function getSlotDocs(component: Declaration) {
     .join("\n");
 }
 
+function has(arr?: any[]) {
+  return Array.isArray(arr) && arr.length > 0;
+}
+
+//
+// CEM Analysis
+//
+
+export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
+  if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
+    return;
+  }
+
+  const references = getReferences(node);
+  updateReferences(references, node, moduleDoc);
+}
+
+function getReferences(node: any) {
+  const docs = getDocsByTagName(node, "reference");
+  return docs
+    ?.map((tags: any) =>
+      tags?.map((doc: any) => {
+        const values = doc?.comment.split(/ - (.*)/s);
+
+        if (values && values.length > 1) {
+          return {
+            name: values[0].trim(),
+            url: values[1].trim(),
+          };
+        }
+      })
+    )
+    .flat();
+}
+
+function updateReferences(references: Reference[], node: any, moduleDoc: any) {
+  if (!references?.length) {
+    return;
+  }
+
+  const className: string = node.name.getText();
+  const component: Declaration = moduleDoc?.declarations?.find(
+    (dec: Declaration) => dec.name === className
+  );
+
+  componentReferences[`${component.tagName}`] = references as Reference[];
+}
+
+function getDocsByTagName(node: any, tagName: string) {
+  return node?.jsDoc?.map((doc: any) =>
+    doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
+  );
+}
+
+//
+// OUTPUTS
+//
+
+export function logPluginInit() {
+  console.log(
+    "\u001b[" +
+      32 +
+      "m" +
+      "[vs-code-custom-data-generator] - Generating config files..." +
+      "\u001b[0m"
+  );
+}
+
+export function saveCustomDataFiles(
+  config: Options,
+  tags: Tag[],
+  cssProperties: VsCssProperty[]
+) {
+  createOutdir(config.outdir!);
+
+  saveFile(
+    config.outdir!,
+    config.htmlFileName!,
+    getCustomHtmlDataFileContents(tags)
+  );
+
+  saveFile(
+    config.outdir!,
+    config.cssFileName!,
+    getCustomCssDataFileContents(cssProperties)
+  );
+}
+
+export function createOutdir(outdir: string) {
+  if (outdir !== "./" && !fs.existsSync(outdir)) {
+    fs.mkdirSync(outdir);
+  }
+}
+
 function saveFile(outdir: string, fileName: string, contents: string) {
   fs.writeFileSync(
     path.join(outdir, fileName),
@@ -339,16 +340,14 @@ function saveFile(outdir: string, fileName: string, contents: string) {
 
 function getCustomHtmlDataFileContents(tags: Tag[]) {
   return `{
-    "version": 1.1,
-    "tags": ${JSON.stringify(tags)}
-  }`;
+      "version": 1.1,
+      "tags": ${JSON.stringify(tags)}
+    }`;
 }
 
 function getCustomCssDataFileContents(properties: VsCssProperty[]) {
   return `{
-    "version": 1.1,
-    "properties": ${JSON.stringify(properties)}
-  }`;
+      "version": 1.1,
+      "properties": ${JSON.stringify(properties)}
+    }`;
 }
-
-const has = (arr?: any[]) => Array.isArray(arr) && arr.length > 0;

@@ -22,62 +22,9 @@ export let config = {
     labels: {},
     cssSets: [],
 };
-export function runCustomDataGenerator(params = {}) {
-    updateConfig(params);
-    return {
-        name: "cem-plugin-vs-code-custom-data-generator",
-        // @ts-ignore
-        analyzePhase({ ts, node, moduleDoc }) {
-            setComponentReferences(ts, node, moduleDoc);
-        },
-        packageLinkPhase({ customElementsManifest }) {
-            logPluginInit();
-            generateCustomDataFile(customElementsManifest);
-        },
-    };
-}
 export function updateConfig(params) {
     config = { ...config, ...params };
     config.labels = { ...defaultLabels, ...params?.labels };
-}
-export function logPluginInit() {
-    console.log("\u001b[" +
-        32 +
-        "m" +
-        "[vs-code-custom-data-generator] - Generating config files..." +
-        "\u001b[0m");
-}
-export function setComponentReferences(ts, node, moduleDoc) {
-    if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
-        return;
-    }
-    const references = getReferences(node);
-    updateReferences(references, node, moduleDoc);
-}
-function getReferences(node) {
-    const docs = getDocsByTagName(node, "reference");
-    return docs
-        ?.map((tags) => tags?.map((doc) => {
-        const values = doc?.comment.split(/ - (.*)/s);
-        if (values && values.length > 1) {
-            return {
-                name: values[0].trim(),
-                url: values[1].trim(),
-            };
-        }
-    }))
-        .flat();
-}
-function updateReferences(references, node, moduleDoc) {
-    if (!references?.length) {
-        return;
-    }
-    const className = node.name.getText();
-    const component = moduleDoc?.declarations?.find((dec) => dec.name === className);
-    componentReferences[`${component.tagName}`] = references;
-}
-function getDocsByTagName(node, tagName) {
-    return node?.jsDoc?.map((doc) => doc?.tags?.filter((tag) => tag?.tagName?.getText() === tagName));
 }
 export function getPropertyList(customElementsManifest) {
     const components = getComponents(customElementsManifest);
@@ -91,7 +38,7 @@ export function getPropertyList(customElementsManifest) {
         }) || []);
     }) || []).flat();
 }
-function getCssPropertyValues(value) {
+export function getCssPropertyValues(value) {
     if (!value) {
         return [];
     }
@@ -116,19 +63,19 @@ export function getValueSet(value) {
     });
 }
 export function getCssValues(value) {
-    return (value
+    return value
         ? value.split(",").map((x) => {
             const propName = x.trim();
             return {
                 name: getCssNameValue(propName),
             };
         })
-        : []);
+        : [];
 }
 function getCssNameValue(value) {
     return !value ? "" : value.startsWith("--") ? `var(${value})` : value;
 }
-function getTagList(customElementsManifest) {
+export function getTagList(customElementsManifest) {
     const components = getComponents(customElementsManifest);
     return components.map((component) => {
         const slots = has(component.slots) && config.slotDocs
@@ -159,16 +106,9 @@ function getDescription(component) {
         : component.summary || component.description)?.replaceAll("\\n", "\n") || "");
 }
 export function generateCustomDataFile(customElementsManifest) {
-    createOutdir();
-    const tags = getTagList(customElementsManifest);
-    const cssPropertied = getPropertyList(customElementsManifest);
-    saveFile(config.outdir, config.htmlFileName, getCustomHtmlDataFileContents(tags));
-    saveFile(config.outdir, config.cssFileName, getCustomCssDataFileContents(cssPropertied));
-}
-function createOutdir() {
-    if (config.outdir !== "./" && !fs.existsSync(config.outdir)) {
-        fs.mkdirSync(config.outdir);
-    }
+    const htmlTags = getTagList(customElementsManifest);
+    const cssProperties = getPropertyList(customElementsManifest);
+    saveCustomDataFiles(config, htmlTags, cssProperties);
 }
 function getComponents(customElementsManifest) {
     return customElementsManifest.modules
@@ -222,19 +162,76 @@ function getSlotDocs(component) {
         ?.map((slot) => `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`)
         .join("\n");
 }
+function has(arr) {
+    return Array.isArray(arr) && arr.length > 0;
+}
+//
+// CEM Analysis
+//
+export function setComponentReferences(ts, node, moduleDoc) {
+    if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
+        return;
+    }
+    const references = getReferences(node);
+    updateReferences(references, node, moduleDoc);
+}
+function getReferences(node) {
+    const docs = getDocsByTagName(node, "reference");
+    return docs
+        ?.map((tags) => tags?.map((doc) => {
+        const values = doc?.comment.split(/ - (.*)/s);
+        if (values && values.length > 1) {
+            return {
+                name: values[0].trim(),
+                url: values[1].trim(),
+            };
+        }
+    }))
+        .flat();
+}
+function updateReferences(references, node, moduleDoc) {
+    if (!references?.length) {
+        return;
+    }
+    const className = node.name.getText();
+    const component = moduleDoc?.declarations?.find((dec) => dec.name === className);
+    componentReferences[`${component.tagName}`] = references;
+}
+function getDocsByTagName(node, tagName) {
+    return node?.jsDoc?.map((doc) => doc?.tags?.filter((tag) => tag?.tagName?.getText() === tagName));
+}
+//
+// OUTPUTS
+//
+export function logPluginInit() {
+    console.log("\u001b[" +
+        32 +
+        "m" +
+        "[vs-code-custom-data-generator] - Generating config files..." +
+        "\u001b[0m");
+}
+export function saveCustomDataFiles(config, tags, cssProperties) {
+    createOutdir(config.outdir);
+    saveFile(config.outdir, config.htmlFileName, getCustomHtmlDataFileContents(tags));
+    saveFile(config.outdir, config.cssFileName, getCustomCssDataFileContents(cssProperties));
+}
+export function createOutdir(outdir) {
+    if (outdir !== "./" && !fs.existsSync(outdir)) {
+        fs.mkdirSync(outdir);
+    }
+}
 function saveFile(outdir, fileName, contents) {
     fs.writeFileSync(path.join(outdir, fileName), prettier.format(contents, { parser: "json" }));
 }
 function getCustomHtmlDataFileContents(tags) {
     return `{
-    "version": 1.1,
-    "tags": ${JSON.stringify(tags)}
-  }`;
+      "version": 1.1,
+      "tags": ${JSON.stringify(tags)}
+    }`;
 }
 function getCustomCssDataFileContents(properties) {
     return `{
-    "version": 1.1,
-    "properties": ${JSON.stringify(properties)}
-  }`;
+      "version": 1.1,
+      "properties": ${JSON.stringify(properties)}
+    }`;
 }
-const has = (arr) => Array.isArray(arr) && arr.length > 0;
