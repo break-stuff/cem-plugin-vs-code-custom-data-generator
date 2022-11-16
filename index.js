@@ -10,7 +10,7 @@ const defaultLabels = {
     cssProperties: "CSS Properties",
     cssParts: "CSS Parts",
 };
-export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {} } = {}) {
+export function generateCustomData({ outdir = "./", htmlFilename = "vscode.html-custom-data.json", cssFilename = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {} } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -25,8 +25,8 @@ export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-
                 "\u001b[0m");
             config = {
                 exclude,
-                htmlFileName,
-                cssFileName,
+                htmlFilename,
+                cssFilename,
                 outdir,
                 descriptionSrc,
                 slotDocs,
@@ -123,9 +123,15 @@ function getDescription(component) {
 function generateCustomDataFile(customElementsManifest) {
     createOutdir();
     const tags = getTagList(customElementsManifest);
-    const cssPropertied = getPropertyList(customElementsManifest);
-    saveFile(config.outdir, config.htmlFileName, getCustomHtmlDataFileContents(tags));
-    saveFile(config.outdir, config.cssFileName, getCustomCssDataFileContents(cssPropertied));
+    const cssProperties = getPropertyList(customElementsManifest);
+
+    if (config.htmlFilename) {
+      saveFile(config.outdir, config.htmlFilename, getCustomHtmlDataFileContents(tags));
+    }
+
+    if (config.cssFilename) {
+      saveFile(config.outdir, config.cssFilename, getCustomCssDataFileContents(cssProperties));
+    }
 }
 function createOutdir() {
     if (config.outdir !== "./" && !fs.existsSync(config.outdir)) {
@@ -189,8 +195,8 @@ function getSlotDocs(component) {
         ?.map((slot) => `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`)
         .join("\n");
 }
-function saveFile(outdir, fileName, contents) {
-    fs.writeFileSync(path.join(outdir, fileName), prettier.format(contents, { parser: "json" }));
+function saveFile(outdir, filename, contents) {
+    fs.writeFileSync(path.join(outdir, filename), prettier.format(contents, { parser: "json" }));
 }
 function getCustomHtmlDataFileContents(tags) {
     return `{

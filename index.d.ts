@@ -1,11 +1,15 @@
 import { Plugin } from "@custom-elements-manifest/analyzer";
 
 export interface Options {
-  /** path to output directory */
+  /** The filename to write HTML data to (without path). Set to `undefined` to skip writing this file. Default: `"vscode.html-custom-data.json"` */
+  htmlFilename?: string;
+  /** The filename to write CSS data to (without path). Set to `undefined` to skip writing this file. Default: `"vscode.css-custom-data.json"` */
+  cssFilename?: string;
+  /** Path to output directory */
   outdir?: string;
-  /** name of the file with you component's custom data */
+  /** Name of the file with you component's custom data */
   filename?: string;
-  /** class names of any components you would like to exclude from the custom data */
+  /** Class names of any components you would like to exclude from the custom data */
   exclude?: string[];
   /** The property name from the component object constructed by the CEM Analyzer */
   descriptionSrc?: "description" | "summary";
