@@ -1,9 +1,9 @@
 import { Plugin } from "@custom-elements-manifest/analyzer";
 
 export interface Options {
-  /** The filename to write HTML data to (without path). Set to `undefined` to skip writing this file. Default: `"vscode.html-custom-data.json"` */
+  /** The filename to write HTML data to (without path). Set to `null` to skip writing this file. Default: `"vscode.html-custom-data.json"` */
   htmlFilename?: string;
-  /** The filename to write CSS data to (without path). Set to `undefined` to skip writing this file. Default: `"vscode.css-custom-data.json"` */
+  /** The filename to write CSS data to (without path). Set to `null` to skip writing this file. Default: `"vscode.css-custom-data.json"` */
   cssFilename?: string;
   /** Path to output directory */
   outdir?: string;
