@@ -156,6 +156,11 @@ function getComponentAttributes(component) {
 }
 function getAttributeValues(attr) {
     const value = attr.type?.text;
+
+    if (!value) {
+      return [];
+    }
+
     return (value.includes("|") ? value.split("|") : value.split(","))
         .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
         .map((type) => {
