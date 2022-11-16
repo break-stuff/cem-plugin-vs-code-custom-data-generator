@@ -126,7 +126,7 @@ describe("updateConfig", () => {
 describe("getCssValues", () => {
   test("given a string with comma separated values, it should return an array of CSS Value objects", () => {
     // Arrange
-    const input = "--color-primary,4px,#ccc";
+    const input = "--color-primary|4px|#ccc";
 
     // Act
     const values = getCssValues(input);

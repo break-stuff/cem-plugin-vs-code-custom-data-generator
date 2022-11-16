@@ -12,6 +12,20 @@ export const customElementsManifest: CustomElementsManifest = {
           kind: "class",
           description: "",
           name: "Radio",
+          cssProperties: [
+            {
+              type: {
+                text: "--radius-sm|--radius-md|--radius-lg",
+              },
+              description: "Controls the border radius of the radio buttons",
+              name: "--border-radius",
+            },
+            {
+              description: "Controls the color of bar",
+              name: "--background-color",
+              default: "red",
+            },
+          ],
           slots: [
             {
               description: "add text here to label your radio button",

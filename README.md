@@ -176,7 +176,7 @@ Here is a basic example of a component configuration using jsDoc:
  * @slot - add radio buttons to the `default` slot to create options to your radio group
  * @slot label - placeholder for the radio group label
  *
- * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the color of foo
+ * @cssprop {--radius-sm|--radius-md|--radius-lg} --border-radius - Controls the color of foo
  * @cssproperty [--background-color=red] - Controls the color of bar
  *
  * @prop {boolean} prop1 - this toggles some unseen feature
@@ -266,7 +266,7 @@ These values can be added in your component's jsDoc. The `var()` wrapper will be
 ```ts
 /**
  *
- * @cssprop {--radius-sm,--radius-md,--radius-lg} --border-radius - Controls the border radius of the component
+ * @cssprop {--radius-sm|--radius-md|--radius-lg} --border-radius - Controls the border radius of the component
  * 
  */
 ```

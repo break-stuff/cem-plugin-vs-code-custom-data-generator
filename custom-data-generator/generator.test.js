@@ -1,6 +1,22 @@
 import { config, getCssPropertyValues, getCssValues, getTagList, getValueSet, updateConfig, } from "./generator";
 import { customElementsManifest } from "./test-data";
 describe("updateConfig", () => {
+    beforeEach(() => {
+        let options = {
+            outdir: "./",
+            htmlFileName: "vscode.html-custom-data.json",
+            cssFileName: "vscode.css-custom-data.json",
+            exclude: [],
+            descriptionSrc: undefined,
+            slotDocs: true,
+            eventDocs: true,
+            cssPropertiesDocs: true,
+            cssPartsDocs: true,
+            labels: {},
+            cssSets: [],
+        };
+        updateConfig(options);
+    });
     test("given a custom `outdir` config value, the config value should be updated, but others should use default", () => {
         // Arrange
         const options = {
@@ -12,7 +28,7 @@ describe("updateConfig", () => {
         expect(config.outdir).toBe("./demo");
         expect(config.htmlFileName).toBe("vscode.html-custom-data.json");
     });
-    test("given a custom `slot` label, the config value should be updated, but other should use default", () => {
+    test("given a custom `slot` label, the config value should be updated, but other labels should use default", () => {
         // Arrange
         const slotLabel = "Slug";
         const options = {
@@ -76,7 +92,7 @@ describe("updateConfig", () => {
 describe("getCssValues", () => {
     test("given a string with comma separated values, it should return an array of CSS Value objects", () => {
         // Arrange
-        const input = "--color-primary,4px,#ccc";
+        const input = "--color-primary|4px|#ccc";
         // Act
         const values = getCssValues(input);
         // Assert

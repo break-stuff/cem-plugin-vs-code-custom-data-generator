@@ -94,7 +94,7 @@ export function getValueSet(value: string): CssValue[] {
 
 export function getCssValues(value: string): CssValue[] {
   return value
-    ? value.split(",").map((x) => {
+    ? (value.includes("|") ? value.split("|") : value.split(",")).map((x) => {
         const propName = x.trim();
         return {
           name: getCssNameValue(propName),

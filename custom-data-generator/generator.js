@@ -64,7 +64,7 @@ export function getValueSet(value) {
 }
 export function getCssValues(value) {
     return value
-        ? value.split(",").map((x) => {
+        ? (value.includes("|") ? value.split("|") : value.split(",")).map((x) => {
             const propName = x.trim();
             return {
                 name: getCssNameValue(propName),
@@ -87,8 +87,8 @@ export function getTagList(customElementsManifest) {
         const cssProps = has(component.cssProperties) && config.cssPropertiesDocs
             ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(component.cssProperties)}`
             : "";
-        const parts = has(component.cssProperties) && config.cssPropertiesDocs
-            ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(component.cssParts)}`
+        const parts = has(component.cssParts) && config.cssPartsDocs
+            ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(component.cssParts)}`
             : "";
         return {
             name: component.tagName,

@@ -4,6 +4,7 @@
 
 - Add CSS Sets feature
 - Fix bug when hiding CSS Part docs
+- Add support for pipe delimited values for CSS values
 
 ## 1.0.0
 
