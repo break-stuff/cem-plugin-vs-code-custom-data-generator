@@ -36,7 +36,7 @@ export function generateCustomData({
   eventDocs = true,
   cssPropertiesDocs = true,
   cssPartsDocs = true,
-  labels = {}
+  labels = {},
 }: Options = {}) {
   return {
     name: "cem-plugin-vs-code-custom-data-generator",
@@ -63,7 +63,7 @@ export function generateCustomData({
         eventDocs,
         cssPartsDocs,
         cssPropertiesDocs,
-        labels: {...defaultLabels, ...labels}
+        labels: { ...defaultLabels, ...labels },
       };
 
       generateCustomDataFile(customElementsManifest);
@@ -154,13 +154,13 @@ function getTagList(customElementsManifest: CustomElementsManifest) {
         : "";
     const cssProps =
       has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${
-            config.labels?.cssProperties
-          }:**\n ${getCssPropertyDocs(component.cssProperties)}`
+        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
+            component.cssProperties
+          )}`
         : "";
     const parts =
-      has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(
+      has(component.cssParts) && config.cssPartsDocs
+        ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(
             component.cssParts
           )}`
         : "";
@@ -191,20 +191,25 @@ function generateCustomDataFile(
 ) {
   createOutdir();
 
-  const tags: Tag[] = getTagList(customElementsManifest);
-  const cssPropertied = getPropertyList(customElementsManifest);
+  if (config.htmlFileName) {
+    const tags: Tag[] = getTagList(customElementsManifest);
 
-  saveFile(
-    config.outdir!,
-    config.htmlFileName!,
-    getCustomHtmlDataFileContents(tags)
-  );
+    saveFile(
+      config.outdir!,
+      config.htmlFileName,
+      getCustomHtmlDataFileContents(tags)
+    );
+  }
 
-  saveFile(
-    config.outdir!,
-    config.cssFileName!,
-    getCustomCssDataFileContents(cssPropertied)
-  );
+  if (config.cssFileName) {
+    const cssProperties = getPropertyList(customElementsManifest);
+
+    saveFile(
+      config.outdir!,
+      config.cssFileName,
+      getCustomCssDataFileContents(cssProperties)
+    );
+  }
 }
 
 function createOutdir() {
@@ -248,13 +253,15 @@ function getComponentAttributes(component: Declaration) {
 
 function getAttributeValues(attr: Attribute): Value[] {
   const value = attr.type?.text;
-  return (value.includes("|") ? value.split("|") : value.split(","))
-    .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
-    .map((type) => {
-      return {
-        name: type.trim(),
-      } as Value;
-    });
+  return !value
+    ? []
+    : (value.includes("|") ? value.split("|") : value.split(","))
+        .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
+        .map((type) => {
+          return {
+            name: type.trim(),
+          } as Value;
+        });
 }
 
 function getEventDocs(component: Declaration) {
