@@ -1,11 +1,11 @@
 export interface Options {
-  /** path to output directory */
+  /** Path to output directory */
   outdir?: string;
-  /** name of the file with you component's custom HTML data */
-  htmlFileName?: string;
-  /** name of the file with you component's custom CSS data */
-  cssFileName?: string;
-  /** class names of any components you would like to exclude from the custom data */
+  /** Name of the file with you component's custom HTML data */
+  htmlFileName?: string | null;
+  /** Name of the file with you component's custom CSS data */
+  cssFileName?: string | null;
+  /** Class names of any components you would like to exclude from the custom data */
   exclude?: string[];
   /** The property name from the component object constructed by the CEM Analyzer */
   descriptionSrc?: "description" | "summary";
@@ -17,14 +17,6 @@ export interface Options {
   cssPropertiesDocs?: boolean;
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
-  /** Controls the Slots heading label */
-  slotsLabel?: string;
-  /** Controls the Slots heading label */
-  eventsLabel?: string;
-  /** Controls the Slots heading label */
-  cssPropertiesLabel?: string;
-  /** Controls the Slots heading label */
-  cssPartsLabel?: string;
   /** Overrides the default section labels in the component description */
   labels?: DescriptionLabels;
   /** Creates reusable CSS values for consistency in components */

@@ -45,8 +45,8 @@ If you don't have it already, add a VS Code settings folder and file at the root
     "./vscode.html-custom-data.json"
   ],
   "css.customData": [
-    "./vscode.css-custom-data.json"
-  ],
+      "./vscode.css-custom-data.json"
+    ]
 }
 ```
 
@@ -73,11 +73,13 @@ The configuration has the following optional parameters:
 
 ```ts
 {
-  /** path to output directory */
+  /** Path to output directory */
   outdir?: string;
-  /** name of the file with you component's custom data */
-  filename?: string;
-  /** class names of any components you would like to exclude from the custom data */
+  /** Name of the file with you component's custom HTML data */
+  htmlFileName?: string | null;
+  /** Name of the file with you component's custom CSS data */
+  cssFileName?: string | null;
+  /** Class names of any components you would like to exclude from the custom data */
   exclude?: string[];
   /** The property name from the component object constructed by the CEM Analyzer */
   descriptionSrc?: "description" | "summary" | string;
@@ -110,8 +112,11 @@ export default {
       /** Output directory to write the React wrappers to - default is the root of the project */
       outdir: 'dist',
 
-      /** name of the file with you component's custom data - default is "vscode.html-custom-data.json" */
-      filename: 'my-library.html-custom-data.json',
+      /** Name of the file with you component's custom HTML data */
+      htmlFileName: 'my-library.html-custom-data.json',
+      
+      /** Name of the file with you component's custom CSS data */
+      cssFileName: 'my-library.css-custom-data.json',
 
       /** class names of any components you would like to exclude from the custom data */
       exclude: ['MyInternalElement'],
@@ -147,11 +152,11 @@ export default {
 
 Here is a basic example of a component configuration using jsDoc:
 
-```ts
+````ts
 /**
  *
- * Radio groups are used to group multiple radio buttons so they function as a single form control. 
- * 
+ * Radio groups are used to group multiple radio buttons so they function as a single form control.
+ *
  * Here is the [documentation](https://my-site.com/docs.md).
  *
  * Use it like this:
@@ -191,17 +196,21 @@ Here is a basic example of a component configuration using jsDoc:
  *
  */
 class RadioGroup extends HTMLElement {}
-```
+````
+
+## Omitting File Output
+
+If you would like to exclude the HTML or CSS output, you can do so by setting the `htmlFileName` or `cssFileName` properties to `null`.
 
 ## Tag Mapping
 
 ![an example of the jsDoc tags used to create the custom data file](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/tags.png?raw=true)
 
-| Tag                      | Description                                                                                                                                                                                     |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@summary` / description | This provides the description for the custom element when autocomplete is used or the element is hovered. If no summary is provided, it will fall back to the `description` if it is available. |
-| `@attr` / `@attribute`   | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options. Values can also be defined in the jsDoc using comma or pipe delimited values                                      |
-| `@reference`             | This is a custom tag for this plugin. It creates reference links at the bottom of the information bubble. Multiple references are supported.                                                    |
+| Tag                      | Description                                                                                                                                                                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@summary` / description | This provides the description for the custom element when autocomplete is used or the element is hovered. If no summary is provided, it will fall back to the `description` if it is available.                                         |
+| `@attr` / `@attribute`   | This will provide descriptions for each attribute. If you use union types in TypeScript or in the description, these will display as autocomplete options. Values can also be defined in the jsDoc using comma or pipe delimited values |
+| `@reference`             | This is a custom tag for this plugin. It creates reference links at the bottom of the information bubble. Multiple references are supported.                                                                                            |
 
 The `@summary` and `@attr` / `@attribute` descriptions have limited markdown support and enable you to style text, create links, and add code snippets.
 
