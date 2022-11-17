@@ -98,6 +98,8 @@ The configuration has the following optional parameters:
     cssProperties?: string;
     cssParts?: string;
   };
+  /** Creates reusable CSS values for consistency in components */
+  cssSets?: CssSet[];
 }
 ```
 
@@ -143,6 +145,17 @@ export default {
         cssProperties: "CSS Variables",
         cssParts: "Style Hooks"
       },
+      /** Creates reusable CSS values for consistency in components */
+      cssSets: [
+        {
+          name: "radiuses",
+          values: [
+            { name: "--radius-sm", description: '2px' },
+            { name: "--radius-md", description: '4px' },
+            { name: "--radius-lg", description: '8px' },
+          ],
+        },
+      ],
     }),
   ],
 };
@@ -270,7 +283,7 @@ Event information will display with the element description during autocompletio
 
 Adding the CSS Custom Data file to your config provides you with autocomplete for your component's CSS custom properties.
 
-These values can be added in your component's jsDoc. The `var()` wrapper will be added automatically.
+These values can be added in your component's jsDoc. The `var()` wrapper will be added automatically if they are prefixed with `--`.
 
 ```ts
 /**
@@ -280,7 +293,56 @@ These values can be added in your component's jsDoc. The `var()` wrapper will be
  */
 ```
 
-![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
+### CSS Sets
+
+You can define reusable CSS values to simplify your efforts and provide greater consistency from one component to another.
+
+First, define your sets in the config. Values can be an object array with a name and optional description or they can be a simple string array.
+
+```js
+// custom-elements-manifest.config.js
+
+import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
+
+export default {
+  plugins: [
+    generateCustomData({
+      cssSets: [
+        {
+          name: "radiuses",
+          values: [
+            { name: "--radius-sm", description: '2px' },
+            { name: "--radius-md", description: '4px' },
+            { name: "--radius-lg", description: '8px' },
+          ],
+        },
+        {
+          name: "spacing",
+          values: [
+            '2px',
+            '4px',
+            '8px',
+            '12px',
+            '16px'
+          ],
+        },
+      ],
+    }),
+  ],
+};
+```
+
+Once they are defined, you can reference them in your components jsDoc by prefixing it with `set:` and providing the name of the set.
+
+```ts
+/**
+ *
+ * @cssprop {set:radiuses} --border-radius - Controls the border radius of the component
+ * 
+ */
+```
+
+![css custom property autocomplete from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
 
 ## CSS
 
