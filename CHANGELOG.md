@@ -1,6 +1,6 @@
 # Changelog 
 
-## 1.2.0
+## Unreleased
 
 - Add CSS Sets feature
 - Add support for pipe delimited values for CSS values
