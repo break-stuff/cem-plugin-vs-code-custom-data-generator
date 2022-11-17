@@ -6,8 +6,10 @@
   "types": "index.d.ts",
   "type": "module",
   "files": [
+    "index.js",
     "index.d.ts",
-    "index.js"
+    "types.d.ts",
+    "/dist"
   ],
   "scripts": {
     "demo": "tsc && cem analyze",
@@ -26,8 +28,7 @@
     "ts-jest": "^29.0.3"
   },
   "dependencies": {
-    "prettier": "^2.7.1",
-    "save-dev": "^0.0.1-security"
+    "prettier": "^2.7.1"
   },
   "keywords": [
     "custom elements",
