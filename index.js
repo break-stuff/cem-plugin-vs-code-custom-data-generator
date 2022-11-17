@@ -10,7 +10,7 @@ const defaultLabels = {
     cssProperties: "CSS Properties",
     cssParts: "CSS Parts",
 };
-export function generateCustomData({ outdir = "./", htmlFilename = "vscode.html-custom-data.json", cssFilename = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {} } = {}) {
+export function generateCustomData({ outdir = "./", htmlFileName = "vscode.html-custom-data.json", cssFileName = "vscode.css-custom-data.json", exclude = [], descriptionSrc, slotDocs = true, eventDocs = true, cssPropertiesDocs = true, cssPartsDocs = true, labels = {}, } = {}) {
     return {
         name: "cem-plugin-vs-code-custom-data-generator",
         // @ts-ignore
@@ -25,15 +25,15 @@ export function generateCustomData({ outdir = "./", htmlFilename = "vscode.html-
                 "\u001b[0m");
             config = {
                 exclude,
-                htmlFilename,
-                cssFilename,
+                htmlFileName,
+                cssFileName,
                 outdir,
                 descriptionSrc,
                 slotDocs,
                 eventDocs,
                 cssPartsDocs,
                 cssPropertiesDocs,
-                labels: { ...defaultLabels, ...labels }
+                labels: { ...defaultLabels, ...labels },
             };
             generateCustomDataFile(customElementsManifest);
         },
@@ -102,8 +102,8 @@ function getTagList(customElementsManifest) {
         const cssProps = has(component.cssProperties) && config.cssPropertiesDocs
             ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(component.cssProperties)}`
             : "";
-        const parts = has(component.cssProperties) && config.cssPropertiesDocs
-            ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPartsDocs(component.cssParts)}`
+        const parts = has(component.cssParts) && config.cssPartsDocs
+            ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(component.cssParts)}`
             : "";
         return {
             name: component.tagName,
@@ -122,15 +122,13 @@ function getDescription(component) {
 }
 function generateCustomDataFile(customElementsManifest) {
     createOutdir();
-    const tags = getTagList(customElementsManifest);
-    const cssProperties = getPropertyList(customElementsManifest);
-
-    if (config.htmlFilename) {
-      saveFile(config.outdir, config.htmlFilename, getCustomHtmlDataFileContents(tags));
+    if (config.htmlFileName) {
+        const tags = getTagList(customElementsManifest);
+        saveFile(config.outdir, config.htmlFileName, getCustomHtmlDataFileContents(tags));
     }
-
-    if (config.cssFilename) {
-      saveFile(config.outdir, config.cssFilename, getCustomCssDataFileContents(cssProperties));
+    if (config.cssFileName) {
+        const cssProperties = getPropertyList(customElementsManifest);
+        saveFile(config.outdir, config.cssFileName, getCustomCssDataFileContents(cssProperties));
     }
 }
 function createOutdir() {
@@ -162,18 +160,15 @@ function getComponentAttributes(component) {
 }
 function getAttributeValues(attr) {
     const value = attr.type?.text;
-
-    if (!value) {
-      return [];
-    }
-
-    return (value.includes("|") ? value.split("|") : value.split(","))
-        .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
-        .map((type) => {
-        return {
-            name: type.trim(),
-        };
-    });
+    return !value
+        ? []
+        : (value.includes("|") ? value.split("|") : value.split(","))
+            .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
+            .map((type) => {
+            return {
+                name: type.trim(),
+            };
+        });
 }
 function getEventDocs(component) {
     return component.events
@@ -195,8 +190,8 @@ function getSlotDocs(component) {
         ?.map((slot) => `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${slot.description}`)
         .join("\n");
 }
-function saveFile(outdir, filename, contents) {
-    fs.writeFileSync(path.join(outdir, filename), prettier.format(contents, { parser: "json" }));
+function saveFile(outdir, fileName, contents) {
+    fs.writeFileSync(path.join(outdir, fileName), prettier.format(contents, { parser: "json" }));
 }
 function getCustomHtmlDataFileContents(tags) {
     return `{
