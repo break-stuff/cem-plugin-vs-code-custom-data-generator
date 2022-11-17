@@ -19,14 +19,6 @@ export interface Options {
   cssPropertiesDocs?: boolean;
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
-  /** Controls the Slots heading label */
-  slotsLabel?: string;
-  /** Controls the Slots heading label */
-  eventsLabel?: string;
-  /** Controls the Slots heading label */
-  cssPropertiesLabel?: string;
-  /** Controls the Slots heading label */
-  cssPartsLabel?: string;
   /** Overrides the default section labels in the component description */
   labels?: DescriptionLabels;
 }
