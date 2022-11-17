@@ -155,8 +155,12 @@ function getDescription(component: Declaration) {
 export function generateCustomDataFile(
   customElementsManifest: CustomElementsManifest
 ) {
-  const htmlTags: Tag[] = getTagList(customElementsManifest);
-  const cssProperties = getPropertyList(customElementsManifest);
+  const htmlTags = config.htmlFileName
+    ? getTagList(customElementsManifest)
+    : [];
+  const cssProperties = config.cssFileName
+    ? getPropertyList(customElementsManifest)
+    : [];
 
   saveCustomDataFiles(config, htmlTags, cssProperties);
 }
@@ -196,13 +200,15 @@ function getComponentAttributes(component: Declaration) {
 
 function getAttributeValues(attr: Attribute): Value[] {
   const value = attr.type?.text;
-  return (value.includes("|") ? value.split("|") : value.split(","))
-    .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
-    .map((type) => {
-      return {
-        name: type.trim(),
-      } as Value;
-    });
+  return !value
+    ? []
+    : (value.includes("|") ? value.split("|") : value.split(","))
+        .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
+        .map((type) => {
+          return {
+            name: type.trim(),
+          } as Value;
+        });
 }
 
 function getEventDocs(component: Declaration) {
@@ -312,17 +318,21 @@ export function saveCustomDataFiles(
 ) {
   createOutdir(config.outdir!);
 
-  saveFile(
-    config.outdir!,
-    config.htmlFileName!,
-    getCustomHtmlDataFileContents(tags)
-  );
+  if (config.htmlFileName) {
+    saveFile(
+      config.outdir!,
+      config.htmlFileName!,
+      getCustomHtmlDataFileContents(tags)
+    );
+  }
 
-  saveFile(
-    config.outdir!,
-    config.cssFileName!,
-    getCustomCssDataFileContents(cssProperties)
-  );
+  if (config.cssFileName) {
+    saveFile(
+      config.outdir!,
+      config.cssFileName!,
+      getCustomCssDataFileContents(cssProperties)
+    );
+  }
 }
 
 export function createOutdir(outdir: string) {
