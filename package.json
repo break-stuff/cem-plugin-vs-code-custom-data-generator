@@ -6,12 +6,15 @@
   "types": "index.d.ts",
   "type": "module",
   "files": [
+    "index.js",
     "index.d.ts",
-    "index.js"
+    "types.d.ts",
+    "/dist"
   ],
   "scripts": {
     "demo": "tsc && cem analyze",
-    "deploy": "tsc && npm publish"
+    "deploy": "tsc && npm publish",
+    "test": "jest"
   },
   "author": "",
   "license": "MIT",
@@ -19,8 +22,10 @@
   "homepage": "https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator",
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.6.3",
+    "@types/jest": "^29.2.3",
     "@types/node": "^18.6.3",
-    "@types/prettier": "^2.6.4"
+    "@types/prettier": "^2.6.4",
+    "ts-jest": "^29.0.3"
   },
   "dependencies": {
     "prettier": "^2.7.1"
@@ -37,6 +42,8 @@
     "vs code",
     "visual studio code",
     "autocomplete",
-    "intellisense"
+    "intellisense",
+    "web components autocomplete",
+    "web components intellisense"
   ]
 }

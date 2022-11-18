@@ -19,6 +19,8 @@ export interface Options {
   cssPartsDocs?: boolean;
   /** Overrides the default section labels in the component description */
   labels?: DescriptionLabels;
+  /** Creates reusable CSS values for consistency in components */
+  cssSets?: CssSet[];
 }
 
 interface DescriptionLabels {
@@ -26,6 +28,16 @@ interface DescriptionLabels {
   events?: string;
   cssProperties?: string;
   cssParts?: string;
+}
+
+export interface CssSet {
+  name: string;
+  values: CssValue[] | string[];
+}
+
+export interface CssValue {
+  name: string;
+  description?: string;
 }
 
 export interface Tag {
@@ -85,22 +97,22 @@ export interface Declaration {
   kind: string;
   description: string;
   name: string;
-  cssProperties: CssProperty[];
-  cssParts: CssPart[];
+  cssProperties?: CssProperty[];
+  cssParts?: CssPart[];
   slots: Slot[];
-  members: Member[];
-  events: Event[];
+  members?: Member[];
+  events?: Event[];
   attributes: Attribute[];
   superclass: SuperClass;
   tagName: string;
-  summary: string;
+  summary?: string;
   customElement: boolean;
 }
 interface CssProperty {
   description: string;
   name: string;
-  default: string;
-  type: Type;
+  default?: string;
+  type?: Type;
 }
 
 interface CssPart {
@@ -119,7 +131,7 @@ interface Member {
   type: Type;
   default?: string;
   description: string;
-  attribute: string;
+  attribute?: string;
   reflects?: boolean;
   privacy?: string;
   parameters?: Parameter[];
@@ -142,7 +154,7 @@ interface Return {
 
 interface Event {
   name: string;
-  type: Type;
+  type?: Type;
   description: string;
 }
 
@@ -151,12 +163,12 @@ interface Attribute {
   type: Type;
   default?: string;
   description: string;
-  fieldName: string;
+  fieldName?: string;
 }
 
 interface SuperClass {
   name: string;
-  package: string;
+  package?: string;
 }
 
 interface Export {
