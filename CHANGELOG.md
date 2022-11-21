@@ -1,9 +1,9 @@
 # Changelog 
 
-## Unreleased
+## 1.2.0
 
-- Add CSS Sets feature
-- Add support for pipe delimited values for CSS values
+- Add CSS Sets feature [#8](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/8)
+- Add support for pipe delimited values for CSS values [#8](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/8)
 
 ## 1.1.0
 
