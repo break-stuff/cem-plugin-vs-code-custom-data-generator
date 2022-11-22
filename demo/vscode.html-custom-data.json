@@ -45,13 +45,13 @@
           "name": "variants",
           "description": "This is a test for sting values",
           "values": [
-            { "name": "'default'" },
-            { "name": "'primary'" },
-            { "name": "'success'" },
-            { "name": "'neutral'" },
-            { "name": "'warning'" },
-            { "name": "'danger'" },
-            { "name": "'text'" }
+            { "name": "default" },
+            { "name": "primary" },
+            { "name": "success" },
+            { "name": "neutral" },
+            { "name": "warning" },
+            { "name": "danger" },
+            { "name": "text" }
           ]
         }
       ],
