@@ -206,7 +206,7 @@ function getAttributeValues(attr: Attribute): Value[] {
         .filter((type) => !EXCLUDED_TYPES.includes(type.trim()))
         .map((type) => {
           return {
-            name: type.trim(),
+            name: removeQuoteWrappers(type),
           } as Value;
         });
 }
@@ -245,6 +245,10 @@ function getSlotDocs(component: Declaration) {
 
 function has(arr?: any[]) {
   return Array.isArray(arr) && arr.length > 0;
+}
+
+export function removeQuoteWrappers(value: string) {
+  return value.trim().replace(/^["'](.+(?=["']$))["']$/, '$1');
 }
 
 //

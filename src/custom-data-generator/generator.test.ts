@@ -5,6 +5,7 @@ import {
   getCssValues,
   getTagList,
   getValueSet,
+  removeQuoteWrappers,
   updateConfig,
 } from "./generator";
 import { customElementsManifest } from "./test-data";
@@ -26,7 +27,7 @@ describe("updateConfig", () => {
     };
 
     updateConfig(options);
-  })
+  });
 
   test("given a custom `outdir` config value, the config value should be updated, but others should use default", () => {
     // Arrange
@@ -54,7 +55,6 @@ describe("updateConfig", () => {
     // Act
     updateConfig(options);
     const tagList = getTagList(customElementsManifest);
-    
 
     // Assert
     expect(config.labels?.slots).toBe("Slug");
@@ -65,29 +65,26 @@ describe("updateConfig", () => {
   test("given a config to hide slots, the Slots section should not be in the docs", () => {
     // Arrange
     const options: Options = {
-      slotDocs: false
+      slotDocs: false,
     };
 
     // Act
     updateConfig(options);
     const tagList = getTagList(customElementsManifest);
-    
 
     // Assert
     expect(JSON.stringify(tagList).includes("**Slots:**")).toBe(false);
-
   });
 
   test("given a config to hide events, the Events section should not be in the docs", () => {
     // Arrange
     const options: Options = {
-      eventDocs: false
+      eventDocs: false,
     };
 
     // Act
     updateConfig(options);
     const tagList = getTagList(customElementsManifest);
-    
 
     // Assert
     expect(JSON.stringify(tagList).includes("**Events:**")).toBe(false);
@@ -96,12 +93,12 @@ describe("updateConfig", () => {
   test("given a config to hide CSS properties, the CSS Properties section should not be in the docs", () => {
     // Arrange
     const options: Options = {
-      cssPropertiesDocs: false
+      cssPropertiesDocs: false,
     };
 
     // Act
     updateConfig(options);
-    const tagList = getTagList(customElementsManifest);    
+    const tagList = getTagList(customElementsManifest);
 
     // Assert
     expect(JSON.stringify(tagList).includes("**CSS Properties:**")).toBe(false);
@@ -110,13 +107,12 @@ describe("updateConfig", () => {
   test("given a config to hide CSS parts, the CSS Parts section should not be in the docs", () => {
     // Arrange
     const options: Options = {
-      cssPartsDocs: false
+      cssPartsDocs: false,
     };
 
     // Act
     updateConfig(options);
     const tagList = getTagList(customElementsManifest);
-    
 
     // Assert
     expect(JSON.stringify(tagList).includes("**CSS Parts:**")).toBe(false);
@@ -229,7 +225,7 @@ describe("getCssPropertyValues", () => {
     };
 
     // Act
-    const values = getCssPropertyValues('set:radiuses');
+    const values = getCssPropertyValues("set:radiuses");
 
     // Assert
     expect(values.length).toBe(3);
@@ -247,5 +243,40 @@ describe("getTagList", () => {
     // Assert
     expect(values[0].name).toBe("var(--color-primary)");
     expect(values[1].name).toBe("4px");
+  });
+});
+
+describe("removeQuoteWrappers", () => {
+  test("given a string with an apostrophe wrapper, it should remove the apostrophes", () => {
+    // Arrange
+    const input = `'Test'`;
+
+    // Act
+    const result = removeQuoteWrappers(input);
+
+    // Assert
+    expect(result).toBe("Test");
+  });
+
+  test("given a string with an quote wrapper, it should remove the quotes", () => {
+    // Arrange
+    const input = `"Test"`;
+
+    // Act
+    const result = removeQuoteWrappers(input);
+
+    // Assert
+    expect(result).toBe("Test");
+  });
+
+  test("given a string with a quote wrapper and an apostrophe within it, it should remove the wrapper but leave the apostrophe", () => {
+    // Arrange
+    const input = `"Can't"`;
+
+    // Act
+    const result = removeQuoteWrappers(input);
+
+    // Assert
+    expect(result).toBe("Can't");
   });
 });
