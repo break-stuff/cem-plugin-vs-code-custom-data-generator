@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.2.1
+
+- Remove single and double quote wrappers from string values [#11](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/11)
+
 ## 1.2.0
 
 - Add CSS Sets feature [#8](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/8)

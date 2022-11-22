@@ -148,6 +148,13 @@
               },
               "description": "This will control the size of radio buttons",
               "name": "size"
+            },
+            {
+              "type": {
+                "text": "'default' | 'primary' | 'success' | 'neutral' | 'warning' | 'danger' | 'text'"
+              },
+              "description": "This is a test for sting values",
+              "name": "variants"
             }
           ],
           "superclass": {

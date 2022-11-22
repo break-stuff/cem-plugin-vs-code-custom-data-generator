@@ -40,6 +40,19 @@
             { "name": "3" },
             { "name": "4" }
           ]
+        },
+        {
+          "name": "variants",
+          "description": "This is a test for sting values",
+          "values": [
+            { "name": "default" },
+            { "name": "primary" },
+            { "name": "success" },
+            { "name": "neutral" },
+            { "name": "warning" },
+            { "name": "danger" },
+            { "name": "text" }
+          ]
         }
       ],
       "references": [

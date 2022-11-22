@@ -18,6 +18,7 @@
  * @attr {boolean} disabled - Disables the element
  * @attribute {string} value - The value of the selected radio
  * @attribute {1,2,3,4} size - This will control the size of radio buttons
+ * @attribute {'default' | 'primary' | 'success' | 'neutral' | 'warning' | 'danger' | 'text'} variants - This is a test for sting values
  *
  * @csspart bar - Styles the color of bar
  *
