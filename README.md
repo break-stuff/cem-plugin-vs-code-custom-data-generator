@@ -267,17 +267,46 @@ If no value is provided, the plugin will use the `summary` property and then fal
  * /
 ````
 
-## Slots
+## Slot Documentation
 
 Slot information will display with the element description during autocompletion or when hovered over. This section can be hidden by setting `slotDocs` to `false` in the config.
 
 ![slot section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/slots.png?raw=true)
 
-## Events
+## Event Documentation
 
-Event information will display with the element description during autocompletion or when hovered over. This section can be hidden by setting `slotEvents` to `false` in the config.
+Event information will display with the element description during autocompletion or when hovered over. This section can be hidden by setting `eventDocs` to `false` in the config.
 
 ![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/events.png?raw=true)
+
+## CSS Documentation
+
+Component-specific [CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) and [CSS Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) are included in the component documentation. These can be hidden using the `cssPropertiesDocs` and `cssPartsDocs` configuration options respectively.
+
+![css properties and css parts sections of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css.png?raw=true)
+
+## Documentation Labels
+
+There may be instances where you may want to translate or override the default section headers. Using the `labels` configuration you can change one or all of the headers for the component description sections.
+
+```js
+// custom-elements-manifest.config.js
+export default {
+  plugins: [
+    generateCustomData({
+      ...
+
+      /** Overrides the default section labels in the component description */
+      labels: {
+        slots: "Placeholders",
+        events: "事件",
+        cssProperties: "Propiedades CSS",
+        cssParts: "Style Hooks"
+      },
+    }),
+  ],
+};
+```
 
 ## CSS Custom Data
 
@@ -344,31 +373,16 @@ Once they are defined, you can reference them in your components jsDoc by prefix
 
 ![css custom property autocomplete from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_autocomplete.gif?raw=true)
 
-## CSS
+### CSS Parts
 
-Component-specific [CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) and [CSS Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) are included in the component documentation. These can be hidden using the `cssPropertiesDocs` and `cssPartsDocs` configuration options respectively.
+Developers will also receive autocomplete for defined CSS parts.
 
-![css properties and css parts sections of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css.png?raw=true)
-
-## Labels
-
-There may be instances where you may want to translate or override the default section headers. Using the `labels` configuration you can change one or all of the headers for the component description sections.
-
-```js
-// custom-elements-manifest.config.js
-export default {
-  plugins: [
-    generateCustomData({
-      ...
-
-      /** Overrides the default section labels in the component description */
-      labels: {
-        slots: "Placeholders",
-        events: "事件",
-        cssProperties: "Propiedades CSS",
-        cssParts: "Style Hooks"
-      },
-    }),
-  ],
-};
+```ts
+/**
+ *
+ * @csspart radio-label - Applies custom styles the radio group label
+ * 
+ */
 ```
+
+![css custom property autocomplete from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/css_part.gif?raw=true)
