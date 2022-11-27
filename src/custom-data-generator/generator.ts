@@ -44,7 +44,7 @@ export function updateConfig(params: Options) {
   config.labels = { ...defaultLabels, ...params?.labels };
 }
 
-export function getPropertyList(
+export function getCssPropertyList(
   customElementsManifest: CustomElementsManifest
 ): VsCssProperty[] {
   const components = getComponents(customElementsManifest);
@@ -56,6 +56,24 @@ export function getPropertyList(
             name: prop.name,
             description: prop.description,
             values: getCssPropertyValues(prop?.type?.text),
+          };
+        }) || []
+      );
+    }) || []
+  ).flat();
+}
+
+export function getCssPartList(
+  customElementsManifest: CustomElementsManifest
+) {
+  const components = getComponents(customElementsManifest);
+  return (
+    components?.map((component) => {
+      return (
+        component.cssParts?.map((prop) => {
+          return {
+            name: `::part(${prop.name})`,
+            description: prop.description,
           };
         }) || []
       );
@@ -159,10 +177,13 @@ export function generateCustomDataFile(
     ? getTagList(customElementsManifest)
     : [];
   const cssProperties = config.cssFileName
-    ? getPropertyList(customElementsManifest)
+    ? getCssPropertyList(customElementsManifest)
+    : [];
+  const cssParts = config.cssFileName
+    ? getCssPartList(customElementsManifest)
     : [];
 
-  saveCustomDataFiles(config, htmlTags, cssProperties);
+  saveCustomDataFiles(config, htmlTags, cssProperties, cssParts);
 }
 
 function getComponents(customElementsManifest: CustomElementsManifest) {
@@ -318,7 +339,8 @@ export function logPluginInit() {
 export function saveCustomDataFiles(
   config: Options,
   tags: Tag[],
-  cssProperties: VsCssProperty[]
+  cssProperties: VsCssProperty[],
+  cssParts: VsCssProperty[],
 ) {
   createOutdir(config.outdir!);
 
@@ -334,7 +356,7 @@ export function saveCustomDataFiles(
     saveFile(
       config.outdir!,
       config.cssFileName!,
-      getCustomCssDataFileContents(cssProperties)
+      getCustomCssDataFileContents(cssProperties, cssParts)
     );
   }
 }
@@ -359,9 +381,10 @@ function getCustomHtmlDataFileContents(tags: Tag[]) {
     }`;
 }
 
-function getCustomCssDataFileContents(properties: VsCssProperty[]) {
+function getCustomCssDataFileContents(properties: VsCssProperty[], parts: VsCssProperty[]) {
   return `{
       "version": 1.1,
-      "properties": ${JSON.stringify(properties)}
+      "properties": ${JSON.stringify(properties)},
+      "pseudoElements": ${JSON.stringify(parts)}
     }`;
 }

@@ -1,3 +1,7 @@
-radio-button {
+.radio-button {
   --border-radius: var(--radius-md);
+}
+
+.radio-button::part(radio-label) {
+  
 }

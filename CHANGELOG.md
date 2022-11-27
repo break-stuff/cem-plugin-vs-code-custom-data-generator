@@ -1,5 +1,9 @@
 # Changelog 
 
+## Upcoming
+
+- Add CSS Part autocomplete [#12](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/12)
+
 ## 1.2.1
 
 - Remove single and double quote wrappers from string values [#11](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/11)

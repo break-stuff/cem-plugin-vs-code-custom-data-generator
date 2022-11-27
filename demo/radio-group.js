@@ -20,7 +20,7 @@
  * @attribute {1,2,3,4} size - This will control the size of radio buttons
  * @attribute {'default' | 'primary' | 'success' | 'neutral' | 'warning' | 'danger' | 'text'} variants - This is a test for sting values
  *
- * @csspart bar - Styles the color of bar
+ * @csspart radio-label - Applies custom styles the radio group label
  *
  * @slot - add radio buttons to the `default` slot to create options to your radio group
  * @slot label - placeholder for the radio group label

@@ -15,5 +15,12 @@
       "description": "Controls the color of bar",
       "values": []
     }
+  ],
+  "pseudoElements": [
+    {
+      "name": "::part(radio-label)",
+      "description": "Applies custom styles the radio group label"
+    },
+    { "name": "::part(radio-label2)" }
   ]
 }

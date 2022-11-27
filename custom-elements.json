@@ -75,8 +75,11 @@
           ],
           "cssParts": [
             {
-              "description": "Styles the color of bar",
-              "name": "bar"
+              "description": "Applies custom styles the radio group label",
+              "name": "radio-label"
+            },
+            {
+              "name": "radio-label2"
             }
           ],
           "slots": [
