@@ -1,6 +1,6 @@
 # Changelog 
 
-## Upcoming
+## 1.3.0
 
 - Add CSS Part autocomplete [#12](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/12)
 
