@@ -4,7 +4,7 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "demo/radio-button.js",
+      "path": "radio-button.js",
       "declarations": [
         {
           "kind": "class",
@@ -46,14 +46,14 @@
           "name": "radio-button",
           "declaration": {
             "name": "Radio",
-            "module": "demo/radio-button.js"
+            "module": "radio-button.js"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "demo/radio-group.js",
+      "path": "radio-group.js",
       "declarations": [
         {
           "kind": "class",
@@ -62,7 +62,7 @@
           "cssProperties": [
             {
               "type": {
-                "text": "set:radiuses"
+                "text": "--radius-sm|--radius-md|--radius-lg"
               },
               "description": "Controls the border radius of the radio buttons",
               "name": "--border-radius"
@@ -144,7 +144,7 @@
             },
             {
               "type": {
-                "text": "1,2,3,4"
+                "text": "1|2|3|4"
               },
               "description": "This will control the size of radio buttons",
               "name": "size"
@@ -170,7 +170,7 @@
           "name": "radio-group",
           "declaration": {
             "name": "RadioGroup",
-            "module": "demo/radio-group.js"
+            "module": "radio-group.js"
           }
         }
       ]

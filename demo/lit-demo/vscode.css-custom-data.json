@@ -4,11 +4,7 @@
     {
       "name": "--border-radius",
       "description": "Controls the border radius of the radio buttons",
-      "values": [
-        { "name": "var(--radius-sm)", "description": "2px" },
-        { "name": "var(--radius-md)", "description": "4px" },
-        { "name": "var(--radius-lg)", "description": "8px" }
-      ]
+      "values": []
     },
     {
       "name": "--background-color",
@@ -20,7 +16,6 @@
     {
       "name": "::part(radio-label)",
       "description": "Applies custom styles the radio group label"
-    },
-    { "name": "::part(radio-label2)" }
+    }
   ]
 }
