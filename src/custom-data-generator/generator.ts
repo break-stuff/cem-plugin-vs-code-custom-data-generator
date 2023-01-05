@@ -210,7 +210,7 @@ function getComponentAttributes(component: Declaration) {
     }
 
     attributes.push({
-      name: attr.fieldName || attr.name,
+      name: attr.name || attr.fieldName,
       description: attr.description,
       values: getAttributeValues(attr),
     } as TagAttribute);

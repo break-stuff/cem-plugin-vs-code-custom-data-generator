@@ -17,7 +17,7 @@
  *
  * @attr {boolean} disabled - Disables the element
  * @attribute {string} value - The value of the selected radio
- * @attribute {1,2,3,4} size - This will control the size of radio buttons
+ * @attribute {1|2|3|4} size - This will control the size of radio buttons
  * @attribute {'default' | 'primary' | 'success' | 'neutral' | 'warning' | 'danger' | 'text'} variants - This is a test for sting values
  *
  * @csspart radio-label - Applies custom styles the radio group label
@@ -25,7 +25,7 @@
  * @slot - add radio buttons to the `default` slot to create options to your radio group
  * @slot label - placeholder for the radio group label
  *
- * @cssprop {set:radiuses} --border-radius - Controls the border radius of the radio buttons
+ * @cssprop {--radius-sm|--radius-md|--radius-lg} --border-radius - Controls the border radius of the radio buttons
  * @cssproperty [--background-color=red] - Controls the color of bar
  *
  * @prop {boolean} prop1 - this toggles some unseen feature
