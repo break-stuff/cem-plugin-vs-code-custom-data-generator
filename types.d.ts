@@ -104,7 +104,7 @@ export interface Declaration {
   events?: Event[];
   attributes: Attribute[];
   superclass: SuperClass;
-  tagName: string;
+  tagName?: string;
   summary?: string;
   customElement: boolean;
 }

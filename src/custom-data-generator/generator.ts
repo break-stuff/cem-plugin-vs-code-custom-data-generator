@@ -150,12 +150,12 @@ export function getTagList(customElementsManifest: CustomElementsManifest) {
         : "";
 
     return {
-      name: component.tagName,
+      name: component.tagName || pascalToKebabCase(component.name),
       description:
         getDescription(component) + slots + events + cssProps + parts,
       attributes: getComponentAttributes(component),
       references: componentReferences
-        ? componentReferences[`${component.tagName}`]
+        ? componentReferences[`${component.name}`]
         : [],
     };
   });
@@ -313,7 +313,7 @@ function updateReferences(references: Reference[], node: any, moduleDoc: any) {
     (dec: Declaration) => dec.name === className
   );
 
-  componentReferences[`${component.tagName}`] = references as Reference[];
+  componentReferences[`${component.name}`] = references as Reference[];
 }
 
 function getDocsByTagName(node: any, tagName: string) {
@@ -388,3 +388,5 @@ function getCustomCssDataFileContents(properties: VsCssProperty[], parts: VsCssP
       "pseudoElements": ${JSON.stringify(parts)}
     }`;
 }
+
+const pascalToKebabCase = (value: string): string => value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
