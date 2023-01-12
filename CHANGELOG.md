@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.3.2
+
+- Fix component references if no tag name is provided [#17](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/17)
+
 ## 1.3.1
 
 - Fix attribute name mapping [#15](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/15)
