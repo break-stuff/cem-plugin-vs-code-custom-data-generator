@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc",
     "deploy": "tsc && npm publish",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "author": "",
   "license": "MIT",
