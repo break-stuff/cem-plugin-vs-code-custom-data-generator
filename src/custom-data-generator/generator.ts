@@ -1,26 +1,25 @@
 import fs from "fs";
 import path from "path";
 import prettier from "prettier";
+import { getReferencesByComponent } from "./cem-utilities.js";
+import {
+  getCssPropsTemplate,
+  getEventsTemplate,
+  getPartsTemplate,
+  getSlotsTemplate,
+} from "./description-templates.js";
+import { toKebabCase, removeQuoteWrappers } from "./utilities.js";
 import type {
   Attribute,
   CssValue,
   CustomElementsManifest,
   Declaration,
   Options,
-  Reference,
   Tag,
   TagAttribute,
   Value,
   VsCssProperty,
 } from "../../types";
-import { getReferencesByComponent } from "./cem-utilities";
-import {
-  getCssPropsTemplate,
-  getEventsTemplate,
-  getPartsTemplate,
-  getSlotsTemplate,
-} from "./description-templates";
-import { has, toKebabCase, removeQuoteWrappers } from "./utilities";
 
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
 const defaultLabels = {
@@ -229,56 +228,6 @@ function getMethods(component: Declaration) {
 }
 
 //
-// CEM Analysis
-//
-
-// export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
-//   if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
-//     return;
-//   }
-
-//   const references = getReferences(node);
-//   updateReferences(references, node, moduleDoc);
-// }
-
-// function getReferences(node: any) {
-//   const docs = getDocsByTagName(node, "reference");
-//   return docs
-//     ?.map((tags: any) =>
-//       tags?.map((doc: any) => {
-//         const values = doc?.comment.split(/ - (.*)/s);
-
-//         if (values && values.length > 1) {
-//           return {
-//             name: values[0].trim(),
-//             url: values[1].trim(),
-//           };
-//         }
-//       })
-//     )
-//     .flat();
-// }
-
-// function updateReferences(references: Reference[], node: any, moduleDoc: any) {
-//   if (!references?.length) {
-//     return;
-//   }
-
-//   const className: string = node.name.getText();
-//   const component: Declaration = moduleDoc?.declarations?.find(
-//     (dec: Declaration) => dec.name === className
-//   );
-
-//   componentReferences[component.name] = references as Reference[];
-// }
-
-// function getDocsByTagName(node: any, tagName: string) {
-//   return node?.jsDoc?.map((doc: any) =>
-//     doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
-//   );
-// }
-
-//
 // OUTPUTS
 //
 
@@ -319,7 +268,7 @@ export function saveCustomDataFiles(
 
 export function createOutdir(outdir: string) {
   if (outdir !== "./" && !fs.existsSync(outdir)) {
-    fs.mkdirSync(outdir);
+    fs.mkdirSync(outdir, { recursive: true });
   }
 }
 
