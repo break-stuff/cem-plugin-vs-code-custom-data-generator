@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createOutdir, saveFile } from "./integrations.js";
 import { getCssPartList, getCssPropertyList, getTagList, config } from "./cem-utilities.js";
 import { CustomElementsManifest, Options, Tag, VsCssProperty } from "../../types";
