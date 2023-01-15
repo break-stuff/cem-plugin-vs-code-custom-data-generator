@@ -3,8 +3,8 @@ import {
   logPluginInit,
   updateConfig,
 } from "./custom-data-generator/generator.js";
-import type { Options, Params } from "../types";
 import { setComponentReferences } from "./custom-data-generator/cem-utilities.js";
+import type { Options, Params } from "../types";
 
 export function generateCustomData(params: Options = {}) {
   updateConfig(params);
