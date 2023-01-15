@@ -5,6 +5,6 @@ export function removeQuoteWrappers(value: string) {
   return value.trim().replace(/^["'](.+(?=["']$))["']$/, "$1");
 }
 
-export function has(arr?: any[]) {
+export function has(arr?: unknown[]) {
   return Array.isArray(arr) && arr.length > 0;
 }
