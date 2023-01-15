@@ -1,6 +1,3 @@
-import fs from "fs";
-import path from "path";
-import prettier from "prettier";
 import { getReferencesByComponent } from "./cem-utilities.js";
 import {
   getCssPropsTemplate,
@@ -9,6 +6,7 @@ import {
   getSlotsTemplate,
 } from "./description-templates.js";
 import { toKebabCase, removeQuoteWrappers } from "./utilities.js";
+import { createOutdir, saveFile } from "./integrations.js";
 import type {
   Attribute,
   CssValue,
@@ -231,16 +229,6 @@ function getMethods(component: Declaration) {
 // OUTPUTS
 //
 
-export function logPluginInit() {
-  console.log(
-    "\u001b[" +
-      32 +
-      "m" +
-      "[vs-code-custom-data-generator] - Generating config files..." +
-      "\u001b[0m"
-  );
-}
-
 export function saveCustomDataFiles(
   config: Options,
   tags: Tag[],
@@ -264,19 +252,6 @@ export function saveCustomDataFiles(
       getCustomCssDataFileContents(cssProperties, cssParts)
     );
   }
-}
-
-export function createOutdir(outdir: string) {
-  if (outdir !== "./" && !fs.existsSync(outdir)) {
-    fs.mkdirSync(outdir, { recursive: true });
-  }
-}
-
-function saveFile(outdir: string, fileName: string, contents: string) {
-  fs.writeFileSync(
-    path.join(outdir, fileName),
-    prettier.format(contents, { parser: "json" })
-  );
 }
 
 function getCustomHtmlDataFileContents(tags: Tag[]) {
