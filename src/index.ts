@@ -1,10 +1,10 @@
 import {
   generateCustomDataFile,
   logPluginInit,
-  setComponentReferences,
   updateConfig,
 } from "./custom-data-generator/generator.js";
 import type { Options, Params } from "../types";
+import { setComponentReferences } from "./custom-data-generator/cem-utilities.js";
 
 export function generateCustomData(params: Options = {}) {
   updateConfig(params);
@@ -18,6 +18,7 @@ export function generateCustomData(params: Options = {}) {
     packageLinkPhase({ customElementsManifest }: Params) {
       logPluginInit();
       generateCustomDataFile(customElementsManifest);
+      console.log("[vs-code-custom-data-generator] - File generation complete.");
     },
   };
 }
