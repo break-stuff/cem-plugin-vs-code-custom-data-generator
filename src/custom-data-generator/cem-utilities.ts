@@ -11,9 +11,7 @@ export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
 }
 
 export function getReferencesByComponent(componentName: string) {
-  return componentReferences
-  ? componentReferences[componentName]
-  : [];
+  return componentReferences[componentName] ?? [];
 }
 
 function getReferences(node: any) {

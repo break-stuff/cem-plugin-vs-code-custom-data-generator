@@ -15,7 +15,8 @@
           "description": "Disables the radio button",
           "values": []
         }
-      ]
+      ],
+      "references": []
     },
     {
       "name": "radio-group",
