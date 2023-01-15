@@ -6,12 +6,12 @@ import {
   getTagList,
   getValueSet,
   updateConfig,
-} from "../generator";
-import { customElementsManifest } from "./test-data";
+} from "../cem-utilities.js";
+import { customElementsManifest } from "./test-data.js";
 
 describe("updateConfig", () => {
   beforeEach(() => {
-    let options: Options = {
+    const options: Options = {
       outdir: "./",
       htmlFileName: "vscode.html-custom-data.json",
       cssFileName: "vscode.css-custom-data.json",
@@ -224,6 +224,7 @@ describe("getCssPropertyValues", () => {
     };
 
     // Act
+    updateConfig(options)
     const values = getCssPropertyValues("set:radiuses");
 
     // Assert
