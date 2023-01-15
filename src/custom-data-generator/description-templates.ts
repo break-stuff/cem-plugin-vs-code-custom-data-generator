@@ -5,7 +5,7 @@ import {
   Event,
   Slot,
 } from "../../types";
-import { has } from "./utilities";
+import { has } from "./utilities.js";
 
 export function getSlotsTemplate(config: Options, slots?: Slot[]): string {
   return has(slots) && config.slotDocs
