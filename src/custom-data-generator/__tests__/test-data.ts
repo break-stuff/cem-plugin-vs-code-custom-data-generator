@@ -1,6 +1,6 @@
 import { CustomElementsManifest, Member, Options } from "../../../types";
 
-export let config: Options = {
+export const config: Options = {
   outdir: "./",
   htmlFileName: "vscode.html-custom-data.json",
   cssFileName: "vscode.css-custom-data.json",
