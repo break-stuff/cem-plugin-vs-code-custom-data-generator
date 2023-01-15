@@ -1,10 +1,10 @@
 import {
-  getSlotsTemplate,
-  getEventsTemplate,
   getCssPropsTemplate,
+  getEventsTemplate,
   getPartsTemplate,
-} from "../description-templates";
-import { config, component } from "./test-data";
+  getSlotsTemplate,
+} from "../description-templates.js";
+import { config, component } from "./test-data.js";
 
 describe("getSlotsTemplate", () => {
   test("given a component with slots, it should return a formatted string", () => {
@@ -144,7 +144,6 @@ describe("getPartsTemplate", () => {
 
     // Act
     const result = getPartsTemplate(config, component.cssParts)?.trim();
-    console.log(result);
 
     // Assert
     expect(result.startsWith("**CSS Parts:**")).toBe(true);
