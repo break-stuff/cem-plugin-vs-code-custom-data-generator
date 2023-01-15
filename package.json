@@ -12,7 +12,7 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsc && cem analyze",
+    "build": "tsc",
     "deploy": "tsc && npm publish",
     "test": "jest"
   },
