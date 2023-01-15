@@ -1,13 +1,12 @@
-import { Options } from "../../types";
+import { Options } from "../../../types";
 import {
   config,
   getCssPropertyValues,
   getCssValues,
   getTagList,
   getValueSet,
-  removeQuoteWrappers,
   updateConfig,
-} from "./generator";
+} from "../generator";
 import { customElementsManifest } from "./test-data";
 
 describe("updateConfig", () => {
@@ -243,40 +242,5 @@ describe("getTagList", () => {
     // Assert
     expect(values[0].name).toBe("var(--color-primary)");
     expect(values[1].name).toBe("4px");
-  });
-});
-
-describe("removeQuoteWrappers", () => {
-  test("given a string with an apostrophe wrapper, it should remove the apostrophes", () => {
-    // Arrange
-    const input = `'Test'`;
-
-    // Act
-    const result = removeQuoteWrappers(input);
-
-    // Assert
-    expect(result).toBe("Test");
-  });
-
-  test("given a string with an quote wrapper, it should remove the quotes", () => {
-    // Arrange
-    const input = `"Test"`;
-
-    // Act
-    const result = removeQuoteWrappers(input);
-
-    // Assert
-    expect(result).toBe("Test");
-  });
-
-  test("given a string with a quote wrapper and an apostrophe within it, it should remove the wrapper but leave the apostrophe", () => {
-    // Arrange
-    const input = `"Can't"`;
-
-    // Act
-    const result = removeQuoteWrappers(input);
-
-    // Assert
-    expect(result).toBe("Can't");
   });
 });

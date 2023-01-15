@@ -3,8 +3,6 @@ import path from "path";
 import prettier from "prettier";
 import type {
   Attribute,
-  CssPart,
-  CssProperty,
   CssValue,
   CustomElementsManifest,
   Declaration,
@@ -15,14 +13,22 @@ import type {
   Value,
   VsCssProperty,
 } from "../../types";
+import { getReferencesByComponent } from "./cem-utilities";
+import {
+  getCssPropsTemplate,
+  getEventsTemplate,
+  getPartsTemplate,
+  getSlotsTemplate,
+} from "./description-templates";
+import { has, toKebabCase, removeQuoteWrappers } from "./utilities";
 
 const EXCLUDED_TYPES = ["string", "boolean", "undefined", "number", "null"];
-let componentReferences: { [key: string]: Reference[] } = {};
 const defaultLabels = {
   slots: "Slots",
   events: "Events",
   cssProperties: "CSS Properties",
   cssParts: "CSS Parts",
+  methods: "Methods",
 };
 
 export let config: Options = {
@@ -35,6 +41,7 @@ export let config: Options = {
   eventDocs: true,
   cssPropertiesDocs: true,
   cssPartsDocs: true,
+  methodDocs: true,
   labels: {},
   cssSets: [],
 };
@@ -63,9 +70,7 @@ export function getCssPropertyList(
   ).flat();
 }
 
-export function getCssPartList(
-  customElementsManifest: CustomElementsManifest
-) {
+export function getCssPartList(customElementsManifest: CustomElementsManifest) {
   const components = getComponents(customElementsManifest);
   return (
     components?.map((component) => {
@@ -128,35 +133,17 @@ function getCssNameValue(value: string) {
 export function getTagList(customElementsManifest: CustomElementsManifest) {
   const components = getComponents(customElementsManifest);
   return components.map((component) => {
-    const slots =
-      has(component.slots) && config.slotDocs
-        ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(component)}`
-        : "";
-    const events =
-      has(component.events) && config.eventDocs
-        ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(component)}`
-        : "";
-    const cssProps =
-      has(component.cssProperties) && config.cssPropertiesDocs
-        ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
-            component.cssProperties!
-          )}`
-        : "";
-    const parts =
-      has(component.cssParts) && config.cssPartsDocs
-        ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(
-            component.cssParts!
-          )}`
-        : "";
+    const slots = getSlotsTemplate(config, component.slots);
+    const events = getEventsTemplate(config, component.events);
+    const cssProps = getCssPropsTemplate(config, component.cssProperties);
+    const parts = getPartsTemplate(config, component.cssParts);
 
     return {
-      name: component.tagName || pascalToKebabCase(component.name),
+      name: component.tagName || toKebabCase(component.name),
       description:
         getDescription(component) + slots + events + cssProps + parts,
       attributes: getComponentAttributes(component),
-      references: componentReferences
-        ? componentReferences[`${component.name}`]
-        : [],
+      references: getReferencesByComponent(component.name),
     };
   });
 }
@@ -232,95 +219,64 @@ function getAttributeValues(attr: Attribute): Value[] {
         });
 }
 
-function getEventDocs(component: Declaration) {
-  return component.events
-    ?.map((event) => `- **${event.name}** - ${event.description}`)
-    .join("\n");
-}
-
-function getCssPropertyDocs(properties: CssProperty[]) {
-  return properties
-    ?.map(
-      (prop) =>
-        `- **${prop.name}** - ${prop.description} _(default: ${prop.default})_`
-    )
-    .join("\n");
-}
-
-function getCssPartsDocs(parts: CssPart[]) {
-  return parts
-    ?.map((part) => `- **${part.name}** - ${part.description}`)
-    .join("\n");
-}
-
-function getSlotDocs(component: Declaration) {
-  return component.slots
-    ?.map(
-      (slot) =>
-        `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${
-          slot.description
-        }`
-    )
-    .join("\n");
-}
-
-function has(arr?: any[]) {
-  return Array.isArray(arr) && arr.length > 0;
-}
-
-export function removeQuoteWrappers(value: string) {
-  return value.trim().replace(/^["'](.+(?=["']$))["']$/, '$1');
+function getMethods(component: Declaration) {
+  return component.members?.filter(
+    (member) =>
+      member.kind === "method" &&
+      member.privacy !== "private" &&
+      member.description?.length
+  );
 }
 
 //
 // CEM Analysis
 //
 
-export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
-  if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
-    return;
-  }
+// export function setComponentReferences(ts: any, node: any, moduleDoc: any) {
+//   if (node.kind !== ts.SyntaxKind.ClassDeclaration) {
+//     return;
+//   }
 
-  const references = getReferences(node);
-  updateReferences(references, node, moduleDoc);
-}
+//   const references = getReferences(node);
+//   updateReferences(references, node, moduleDoc);
+// }
 
-function getReferences(node: any) {
-  const docs = getDocsByTagName(node, "reference");
-  return docs
-    ?.map((tags: any) =>
-      tags?.map((doc: any) => {
-        const values = doc?.comment.split(/ - (.*)/s);
+// function getReferences(node: any) {
+//   const docs = getDocsByTagName(node, "reference");
+//   return docs
+//     ?.map((tags: any) =>
+//       tags?.map((doc: any) => {
+//         const values = doc?.comment.split(/ - (.*)/s);
 
-        if (values && values.length > 1) {
-          return {
-            name: values[0].trim(),
-            url: values[1].trim(),
-          };
-        }
-      })
-    )
-    .flat();
-}
+//         if (values && values.length > 1) {
+//           return {
+//             name: values[0].trim(),
+//             url: values[1].trim(),
+//           };
+//         }
+//       })
+//     )
+//     .flat();
+// }
 
-function updateReferences(references: Reference[], node: any, moduleDoc: any) {
-  if (!references?.length) {
-    return;
-  }
+// function updateReferences(references: Reference[], node: any, moduleDoc: any) {
+//   if (!references?.length) {
+//     return;
+//   }
 
-  const className: string = node.name.getText();
-  const component: Declaration = moduleDoc?.declarations?.find(
-    (dec: Declaration) => dec.name === className
-  );
+//   const className: string = node.name.getText();
+//   const component: Declaration = moduleDoc?.declarations?.find(
+//     (dec: Declaration) => dec.name === className
+//   );
 
-  componentReferences[`${component.name}`] = references as Reference[];
-}
+//   componentReferences[component.name] = references as Reference[];
+// }
 
-function getDocsByTagName(node: any, tagName: string) {
-  return node?.jsDoc?.map((doc: any) =>
-    doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
-  );
-}
+// function getDocsByTagName(node: any, tagName: string) {
+//   return node?.jsDoc?.map((doc: any) =>
+//     doc?.tags?.filter((tag: any) => tag?.tagName?.getText() === tagName)
+//   );
+// }
 
 //
 // OUTPUTS
@@ -340,7 +296,7 @@ export function saveCustomDataFiles(
   config: Options,
   tags: Tag[],
   cssProperties: VsCssProperty[],
-  cssParts: VsCssProperty[],
+  cssParts: VsCssProperty[]
 ) {
   createOutdir(config.outdir!);
 
@@ -381,12 +337,13 @@ function getCustomHtmlDataFileContents(tags: Tag[]) {
     }`;
 }
 
-function getCustomCssDataFileContents(properties: VsCssProperty[], parts: VsCssProperty[]) {
+function getCustomCssDataFileContents(
+  properties: VsCssProperty[],
+  parts: VsCssProperty[]
+) {
   return `{
       "version": 1.1,
       "properties": ${JSON.stringify(properties)},
       "pseudoElements": ${JSON.stringify(parts)}
     }`;
 }
-
-const pascalToKebabCase = (value: string): string => value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
