@@ -17,6 +17,8 @@ export interface Options {
   cssPropertiesDocs?: boolean;
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
+  /** Displays the methods section of the element description */
+  methodDocs?: boolean;
   /** Overrides the default section labels in the component description */
   labels?: DescriptionLabels;
   /** Creates reusable CSS values for consistency in components */
@@ -28,6 +30,7 @@ interface DescriptionLabels {
   events?: string;
   cssProperties?: string;
   cssParts?: string;
+  methods?: string;
 }
 
 export interface CssSet {
@@ -128,9 +131,9 @@ interface Slot {
 interface Member {
   kind: string;
   name: string;
-  type: Type;
+  type?: Type;
   default?: string;
-  description: string;
+  description?: string;
   attribute?: string;
   reflects?: boolean;
   privacy?: string;
