@@ -1,6 +1,7 @@
 import {
   getCssPropsTemplate,
   getEventsTemplate,
+  getMethodsTemplate,
   getPartsTemplate,
   getSlotsTemplate,
 } from "./description-templates.js";
@@ -132,11 +133,18 @@ export function getTagList(customElementsManifest: CustomElementsManifest) {
     const events = getEventsTemplate(config, component.events);
     const cssProps = getCssPropsTemplate(config, component.cssProperties);
     const parts = getPartsTemplate(config, component.cssParts);
+    const methods = getMethodsTemplate(config, getMethods(component));
 
     return {
       name: component.tagName || toKebabCase(component.name),
       description:
-        getDescription(component) + slots + events + cssProps + parts,
+        getDescription(component) +
+        "\n\n\n---\n\n\n" +
+        events +
+        methods +
+        slots +
+        cssProps +
+        parts,
       attributes: getComponentAttributes(component),
       references: getReferencesByComponent(component.name),
     };
@@ -198,7 +206,7 @@ function getAttributeValues(attr: Attribute): Value[] {
         });
 }
 
-function getMethods(component: Declaration) {
+export function getMethods(component: Declaration) {
   return component.members?.filter(
     (member) =>
       member.kind === "method" &&

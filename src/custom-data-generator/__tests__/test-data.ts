@@ -104,6 +104,33 @@ export const component = {
       name: "prop2",
       kind: "field",
     },
+    {
+      kind: "method",
+      name: "handleDocumentKeyDown",
+      parameters: [
+        {
+          name: "event",
+          type: {
+            text: "KeyboardEvent",
+          },
+        },
+      ],
+    },
+    {
+      kind: "method",
+      name: "handleOpenChange",
+      privacy: "private",
+    },
+    {
+      kind: "method",
+      name: "show",
+      description: "Shows the dialog.",
+    },
+    {
+      kind: "method",
+      name: "hide",
+      description: "Hides the dialog",
+    },
   ],
   events: [
     {

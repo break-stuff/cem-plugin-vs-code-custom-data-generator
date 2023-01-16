@@ -3,11 +3,12 @@ import {
   config,
   getCssPropertyValues,
   getCssValues,
+  getMethods,
   getTagList,
   getValueSet,
   updateConfig,
 } from "../cem-utilities.js";
-import { customElementsManifest } from "./test-data.js";
+import { component, customElementsManifest } from "./test-data.js";
 
 describe("updateConfig", () => {
   beforeEach(() => {
@@ -243,5 +244,17 @@ describe("getTagList", () => {
     // Assert
     expect(values[0].name).toBe("var(--color-primary)");
     expect(values[1].name).toBe("4px");
+  });
+});
+
+describe("getMethods", () => {
+  test("given a component with 4 methods where 1 is private and 1 does not have a description, it should return 2 methods", () => {
+    // Arrange
+
+    // Act
+    const methods = getMethods(component);
+
+    // Assert
+    expect(methods?.length).toBe(2);
   });
 });

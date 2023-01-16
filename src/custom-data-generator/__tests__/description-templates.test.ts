@@ -1,6 +1,8 @@
+import { getMethods } from "../cem-utilities.js";
 import {
   getCssPropsTemplate,
   getEventsTemplate,
+  getMethodsTemplate,
   getPartsTemplate,
   getSlotsTemplate,
 } from "../description-templates.js";
@@ -176,6 +178,52 @@ describe("getPartsTemplate", () => {
 
     // Act
     const result = getPartsTemplate(config, []);
+
+    // Assert
+    expect(result).toBe("");
+  });
+});
+
+describe("getMethodsTemplate", () => {
+  test("given a component with methods, it should return a formatted string", () => {
+    // Arrange
+
+    // Act
+    const methods = getMethods(component);
+    const result = getMethodsTemplate(config, methods)?.trim();    
+
+    // Assert
+    expect(result.startsWith("**Methods:**")).toBe(true);
+    expect(result.endsWith("dialog")).toBe(true);
+  });
+
+  test("given a configuration where `methodDocs` is `false`, it should return an empty string", () => {
+    // Arrange
+
+    // Act
+    const methodConfig = { ...config, methodDocs: false };
+    const methods = getMethods(component);
+    const result = getMethodsTemplate(methodConfig, methods)?.trim();    
+
+    // Assert
+    expect(result).toBe("");
+  });
+
+  test("given a component where methods are `undefined`, it should return an empty string", () => {
+    // Arrange
+
+    // Act
+    const result = getMethodsTemplate(config, undefined)?.trim();    
+
+    // Assert
+    expect(result).toBe("");
+  });
+
+  test("given a component where methods are an empty array, it should return an empty string", () => {
+    // Arrange
+
+    // Act
+    const result = getMethodsTemplate(config, [])?.trim();    
 
     // Assert
     expect(result).toBe("");

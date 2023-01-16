@@ -6,17 +6,18 @@ import {
   Options,
   Event,
   Slot,
+  Member,
 } from "../../types";
 
 export function getSlotsTemplate(config: Options, slots?: Slot[]): string {
   return has(slots) && config.slotDocs
-    ? `\n\n**${config.labels?.slots}:**\n ${getSlotDocs(slots!)}`
+    ? `\n\n### **${config.labels?.slots}:**\n ${getSlotDocs(slots!)}`
     : "";
 }
 
 export function getEventsTemplate(config: Options, events?: Event[]): string {
   return has(events) && config.eventDocs
-    ? `\n\n**${config.labels?.events}:**\n ${getEventDocs(events!)}`
+    ? `\n\n### **${config.labels?.events}:**\n ${getEventDocs(events!)}`
     : "";
 }
 
@@ -25,7 +26,7 @@ export function getCssPropsTemplate(
   cssProperties?: CssProperty[]
 ): string {
   return has(cssProperties) && config.cssPropertiesDocs
-    ? `\n\n**${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
+    ? `\n\n### **${config.labels?.cssProperties}:**\n ${getCssPropertyDocs(
         cssProperties!
       )}`
     : "";
@@ -36,9 +37,16 @@ export function getPartsTemplate(
   cssParts?: CssPart[]
 ): string {
   return has(cssParts) && config.cssPartsDocs
-    ? `\n\n**${config.labels?.cssParts}:**\n ${getCssPartsDocs(cssParts!)}`
+    ? `\n\n### **${config.labels?.cssParts}:**\n ${getCssPartsDocs(cssParts!)}`
     : "";
 }
+
+export function getMethodsTemplate(config: Options, methods?: Member[]): string {
+  return has(methods) && config.methodDocs
+    ? `\n\n### **${config.labels?.methods}:**\n ${getMethodDocs(methods!)}`
+    : "";
+}
+
 
 function getEventDocs(events: Event[]) {
   return events
@@ -67,6 +75,17 @@ function getSlotDocs(slots: Slot[]) {
       (slot) =>
         `- ${slot.name ? `**${slot.name}**` : "_default_"} - ${
           slot.description
+        }`
+    )
+    .join("\n");
+}
+
+function getMethodDocs(methods: Member[]) {
+  return methods
+    ?.map(
+      (method) =>
+        `- **${method.name}()** - ${
+          method.description
         }`
     )
     .join("\n");
