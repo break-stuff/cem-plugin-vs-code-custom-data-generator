@@ -2,8 +2,8 @@
 
 ## 1.4.0
 
-- Add methods to docs
-- Split apart logic in separate files and add more unit tests.
+- Add methods to docs [#18](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/18)
+- Split apart logic in separate files and add more unit tests [#18](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/18)
 
 ## 1.3.2
 
