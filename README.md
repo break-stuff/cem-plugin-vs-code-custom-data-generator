@@ -92,11 +92,14 @@ The configuration has the following optional parameters:
   /** Displays the CSS parts section of the element description */
   cssPartsDocs?: boolean;
   /** Overrides the default section labels in the component description */
+  /** Displays the methods section of the element description */
+  methodDocs?: boolean;
   labels?: {
     slots?: string;
     events?: string;
     cssProperties?: string;
     cssParts?: string;
+    methods?: string;
   };
   /** Creates reusable CSS values for consistency in components */
   cssSets?: CssSet[];
@@ -138,12 +141,16 @@ export default {
       /** Displays the CSS parts section of the element description */
       cssPartsDocs: true,
 
+      /** Displays the methods section of the element description */
+      methodDocs: true,
+
       /** Overrides the default section labels in the component description */
       labels: {
         slots: "Slot Section",
         events: "Custom Events",
         cssProperties: "CSS Variables",
-        cssParts: "Style Hooks"
+        cssParts: "Style Hooks",
+        methods: "Functions"
       },
       /** Creates reusable CSS values for consistency in components */
       cssSets: [
@@ -279,6 +286,10 @@ Event information will display with the element description during autocompletio
 
 ![events section of autocomplete popup from vs code](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/blob/main/demo/images/events.png?raw=true)
 
+## Method Documentation
+
+Methods will display if they are `public` and have a description. This section can be hidden by setting `methodDocs` to `false` in the config.
+
 ## CSS Documentation
 
 Component-specific [CSS Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) and [CSS Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) are included in the component documentation. These can be hidden using the `cssPropertiesDocs` and `cssPartsDocs` configuration options respectively.
@@ -301,7 +312,8 @@ export default {
         slots: "Placeholders",
         events: "事件",
         cssProperties: "Propiedades CSS",
-        cssParts: "Style Hooks"
+        cssParts: "Style Hooks",
+        methods: "Actions"
       },
     }),
   ],

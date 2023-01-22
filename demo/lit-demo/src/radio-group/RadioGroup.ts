@@ -53,6 +53,16 @@ export class RadioGroup extends LitElement {
   /** This is a camel-case attribute */
   @property({ attribute: 'my-attribute' }) myAttribute?: string;
 
+  /** Validated the radio inputs */
+  validate() {
+    return '';
+  }
+
+  /** This is a test method with parameters */
+  checkStatus(value: string, message: string): string {
+    return value ?? '';
+  }
+
   render() {
     return html`
       <h2>Hello world!</h2>

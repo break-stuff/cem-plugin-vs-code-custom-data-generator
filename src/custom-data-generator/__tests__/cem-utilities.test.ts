@@ -1,18 +1,18 @@
-import { Options } from "../../types";
+import { Options } from "../../../types";
 import {
   config,
   getCssPropertyValues,
   getCssValues,
+  getMethods,
   getTagList,
   getValueSet,
-  removeQuoteWrappers,
   updateConfig,
-} from "./generator";
-import { customElementsManifest } from "./test-data";
+} from "../cem-utilities.js";
+import { component, customElementsManifest } from "./test-data.js";
 
 describe("updateConfig", () => {
   beforeEach(() => {
-    let options: Options = {
+    const options: Options = {
       outdir: "./",
       htmlFileName: "vscode.html-custom-data.json",
       cssFileName: "vscode.css-custom-data.json",
@@ -225,6 +225,7 @@ describe("getCssPropertyValues", () => {
     };
 
     // Act
+    updateConfig(options)
     const values = getCssPropertyValues("set:radiuses");
 
     // Assert
@@ -246,37 +247,14 @@ describe("getTagList", () => {
   });
 });
 
-describe("removeQuoteWrappers", () => {
-  test("given a string with an apostrophe wrapper, it should remove the apostrophes", () => {
+describe("getMethods", () => {
+  test("given a component with 4 methods where 1 is private and 1 does not have a description, it should return 2 methods", () => {
     // Arrange
-    const input = `'Test'`;
 
     // Act
-    const result = removeQuoteWrappers(input);
+    const methods = getMethods(component);
 
     // Assert
-    expect(result).toBe("Test");
-  });
-
-  test("given a string with an quote wrapper, it should remove the quotes", () => {
-    // Arrange
-    const input = `"Test"`;
-
-    // Act
-    const result = removeQuoteWrappers(input);
-
-    // Assert
-    expect(result).toBe("Test");
-  });
-
-  test("given a string with a quote wrapper and an apostrophe within it, it should remove the wrapper but leave the apostrophe", () => {
-    // Arrange
-    const input = `"Can't"`;
-
-    // Act
-    const result = removeQuoteWrappers(input);
-
-    // Assert
-    expect(result).toBe("Can't");
+    expect(methods?.length).toBe(2);
   });
 });
