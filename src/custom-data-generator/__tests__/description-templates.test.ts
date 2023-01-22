@@ -16,7 +16,7 @@ describe("getSlotsTemplate", () => {
     const result = getSlotsTemplate(config, component.slots)?.trim();
 
     // Assert
-    expect(result.startsWith("**Slots:**")).toBe(true);
+    expect(result.startsWith("### **Slots:**")).toBe(true);
     expect(result.endsWith("label")).toBe(true);
   });
 
@@ -60,7 +60,7 @@ describe("getEventsTemplate", () => {
     const result = getEventsTemplate(config, component.events)?.trim();
 
     // Assert
-    expect(result.startsWith("**Events:**")).toBe(true);
+    expect(result.startsWith("### **Events:**")).toBe(true);
     expect(result.endsWith("typed-custom-event")).toBe(true);
   });
 
@@ -104,7 +104,7 @@ describe("getCssPropsTemplate", () => {
     const result = getCssPropsTemplate(config, component.cssProperties)?.trim();
 
     // Assert
-    expect(result.startsWith("**CSS Properties:**")).toBe(true);
+    expect(result.startsWith("### **CSS Properties:**")).toBe(true);
     expect(result.endsWith("_(default: red)_")).toBe(true);
   });
 
@@ -148,7 +148,7 @@ describe("getPartsTemplate", () => {
     const result = getPartsTemplate(config, component.cssParts)?.trim();
 
     // Assert
-    expect(result.startsWith("**CSS Parts:**")).toBe(true);
+    expect(result.startsWith("### **CSS Parts:**")).toBe(true);
     expect(result.endsWith("bar")).toBe(true);
   });
 
@@ -191,9 +191,10 @@ describe("getMethodsTemplate", () => {
     // Act
     const methods = getMethods(component);
     const result = getMethodsTemplate(config, methods)?.trim();    
+console.log(result);
 
     // Assert
-    expect(result.startsWith("**Methods:**")).toBe(true);
+    expect(result.startsWith("### **Methods:**")).toBe(true);
     expect(result.endsWith("dialog")).toBe(true);
   });
 
