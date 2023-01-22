@@ -7,6 +7,7 @@ import {
   Event,
   Slot,
   Member,
+  Parameter,
 } from "../../types";
 
 export function getSlotsTemplate(config: Options, slots?: Slot[]): string {
@@ -41,12 +42,14 @@ export function getPartsTemplate(
     : "";
 }
 
-export function getMethodsTemplate(config: Options, methods?: Member[]): string {
+export function getMethodsTemplate(
+  config: Options,
+  methods?: Member[]
+): string {
   return has(methods) && config.methodDocs
     ? `\n\n### **${config.labels?.methods}:**\n ${getMethodDocs(methods!)}`
     : "";
 }
-
 
 function getEventDocs(events: Event[]) {
   return events
@@ -84,9 +87,19 @@ function getMethodDocs(methods: Member[]) {
   return methods
     ?.map(
       (method) =>
-        `- **${method.name}()** - ${
-          method.description
-        }`
+        `- **${method.name}${getParameters(method.parameters)}${
+          method.return ? `: _${method.return.type.text}_` : ""
+        }** - ${method.description}`
     )
     .join("\n");
+}
+
+function getParameters(parameters?: Parameter[]): string {
+  return parameters
+    ? "(" +
+        parameters
+          .map((x) => `${x.name + (x?.type?.text ? `: _${x?.type?.text}_` : "")}`)
+          .join(", ") +
+        ")"
+    : "()";
 }

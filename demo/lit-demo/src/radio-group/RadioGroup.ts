@@ -58,6 +58,11 @@ export class RadioGroup extends LitElement {
     return '';
   }
 
+  /** This is a test method with parameters */
+  checkStatus(value: string, message: string): string {
+    return value ?? '';
+  }
+
   render() {
     return html`
       <h2>Hello world!</h2>
