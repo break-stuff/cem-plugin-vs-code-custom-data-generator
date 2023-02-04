@@ -156,7 +156,7 @@ function getDescription(component: Declaration) {
     (config.descriptionSrc
       ? component[config.descriptionSrc]
       : component.summary || component.description
-    )?.replaceAll("\\n", "\n") || ""
+    )?.replace(/\\n/g, "\n") || ""
   );
 }
 
