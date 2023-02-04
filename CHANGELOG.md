@@ -1,5 +1,9 @@
 # Changelog 
 
+## 1.4.1
+
+- Add support for Node v14 [#20](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/20)
+
 ## 1.4.0
 
 - Add methods to docs [#18](https://github.com/break-stuff/cem-plugin-vs-code-custom-data-generator/pull/18)
