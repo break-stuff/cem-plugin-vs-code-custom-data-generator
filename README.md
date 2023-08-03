@@ -1,5 +1,7 @@
 # cem-plugin-vs-code-custom-data-generator
 
+> This project has been moved to the [Custom Element VS Code Integration](https://www.npmjs.com/package/custom-element-vs-code-integration) project.
+
 This is a plugin automatically generates a custom data config file for [VS Code](https://code.visualstudio.com/) using the [Custom Element Manifest Analyzer](https://custom-elements-manifest.open-wc.org/).
 
 This config enables VS Code to display autocomplete and contextual information about your custom elements.
